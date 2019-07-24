@@ -1,0 +1,56 @@
+@name Admin Pistol
+@persist Attack Weapon Mode Attack2 Int:string Str:string Type:string
+@persist ModeArray:array KickMessages:string Say:string Use IMode
+
+if(first()){
+    runOnTick(1)
+    ### --- Kick Messages, too add a custom one,                ###
+    KickMessages = ",Final Warning,Minging,Spamming,Idiot"
+    ### simply add ",CUSTOMHERE" to the end of the string.  --- ###
+    ModeArray="Mode 1 : Kick;Mode 2 : Ban'Minutes',60,360,1000,0;Mode 3 : Slay;Mode 4 : Slap'Damage',15,50,75,0;Mode 5 : Jail'Time',60,120,300,0;Mode 6 : Strip;Mode 7 : Ignite'Time',50,150,300,0;Mode 8 : Freeze;Mode 9 : Ragdoll;Mode 10 : Explode;Mode 11 : ID;":explode(";")
+    ModeArray[1,string]=ModeArray[1,string]+"'Message'"+KickMessages
+}
+
+Weapon = owner():weapon():type()=="weapon_357"                                       
+
+if(Weapon){ 
+    if($Weapon){
+        hint("Vinyl Scratch's Admin Pistol equipped.",5)
+    }      
+    Use = owner():keyUse()
+    Attack = owner():keyAttack1()
+    Attack2 = owner():keyAttack2()
+    if(Attack2 & $Attack2&Use==0){
+        owner():soundPlay(0,0,"buttons/button17.wav") ### --- Mode Sound
+        Mode++
+        IMode=0
+        Int=ModeArray[Mode,string]:explode(",")[IMode+2,string]
+        if(Int:find("Mode")){Int=""}
+        Str=ModeArray[Mode,string]:explode("'")[1,string]
+        Str=Str:right(Str:length()-(8+Mode:toString():length()))
+        print(4,ModeArray[Mode,string]:explode("'")[1,string])
+        if(Mode>ModeArray:count()-1){Mode=0}
+    }    
+    if(Use & $Use){
+        if(ModeArray[Mode,string]:find("'")){
+            owner():soundPlay(0,0,"buttons/lightswitch2.wav") ### --- Mode Setting Sound
+            IMode++
+            Type=ModeArray[Mode,string]:explode("'")[2,string]
+            Int=ModeArray[Mode,string]:explode(",")[IMode+1,string]
+            print(4,Str + " "+Type+" : " + Int)
+            if(IMode>ModeArray[Mode,string]:explode(","):count()-2){IMode=0}
+        }
+    }
+if(Attack&$Attack&Mode){
+        if(changed(owner():weapon():clip1())){
+            soundPlay(0,1,"weapons/stunstick/alyx_stunner1.wav")    ### --- ShootSound
+        }
+        AimEnt = owner():aimEntity()
+        if(AimEnt:steamID()!=owner():steamID()&AimEnt:isPlayer()){
+            Say=Str:lower()+" " + AimEnt:steamID()+" "+Int
+            concmd("say @"+Say)
+        }
+    }
+}
+# wire_expression2_concmd 1
+

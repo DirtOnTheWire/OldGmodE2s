@@ -1,0 +1,488 @@
+@name Dirty Car Hud
+@inputs Button1 Button2 S:wirelink Mouse1 Mouse2 Shift W Reset FrontL:entity Frontr:entity RearL:entity RearR:entity BasePlate:entity TopPlate:entity
+@persist T I TargCount Players:array Mainmenu Mainmenu1 Mainmenu2 Mainmenu3 Mainmenu4 Mainmenu5 Mainmenulock SubMenu1
+@persist Menu1Sub1 Menu1Sub2 Menu1Sub3 Menu1Sub4 Menu1Sub5 Submenu1lock CannonTarg SecondaryTarg DroneTarg 
+
+@persist FrontLength RearLength FrontDampening RearDampening FrontConstant RearConstant FrontWheelWeight RearWheelWeight BasePlateWeight TopBarWeight Throttle1
+@persist White:vector Grey:vector Grey2:vector Yellow:vector Red:vector LengthMulti DampeningMulti ConstantMulti WeightMulti ThrottleMulti
+ 
+@persist Menu51 Menu52 Menu53 CannonTargClass SecondaryTargClass DroneTargClass CannonTarget:entity SecondaryTarget:entity DroneTarget:entity 
+@persist CannonFireMode CannonTargMode SecondaryFireMode SecondaryTargMode DroneFireMode DroneTargMode DroneCtrl DroneMode
+@persist CannonMenu SecondaryMenu DronetargetMenu CannonMenuPos SecondaryMenuPos DronetargetMenuPos 
+@outputs FrontLength RearLength FrontDampening RearDampening FrontConstant RearConstant FrontWheelWeight RearWheelWeight BasePlateWeight TopBarWeight Throttle
+
+@trigger all
+interval(200)
+#if(Reset){reset()}
+if(first()|duped()|dupefinished()||Reset){
+    
+    #entity():setAlpha(0)
+    
+    FrontLength=60
+    RearLength=60
+    FrontDampening=2000
+    RearDampening=2000
+    FrontConstant=100000
+    RearConstant=10000
+    FrontWheelWeight=300
+    RearWheelWeight=300
+    BasePlateWeight=500
+    TopBarWeight=100
+    Throttle1=100
+    
+    
+#   These change how fast values can change
+    LengthMulti=1
+    DampeningMulti=100
+    ConstantMulti=100
+    WeightMulti=10
+    ThrottleMulti=10 
+
+    White=vec(255,255,255)
+    Grey=vec(125,125,125)
+    Grey2=vec(200,200,200)
+    Yellow=vec(200,200,100)
+    Red=vec(200,100,100)
+    
+    CannonMenuPos=50
+    SecondaryMenuPos=120
+    DronetargetMenuPos=190
+    
+    S:egpClear()
+    
+    S:egpRoundedBox(26,vec2(160,175),vec2(300,300))
+    S:egpColor(26,vec(80,80,80))
+    S:egpAlpha(26,220)
+    
+    S:egpRoundedBoxOutline(138,vec2(CannonMenuPos+3,110),vec2(62,15))
+    S:egpColor(138,Grey)
+    
+    
+    S:egpRoundedBoxOutline(139,vec2(SecondaryMenuPos+3,110),vec2(62,15))
+    S:egpColor(139,Grey)
+    
+    S:egpRoundedBoxOutline(140,vec2(DronetargetMenuPos+3,110),vec2(62,15))
+    S:egpColor(140,Grey)
+
+    
+    
+    S:egpRoundedBoxOutline(142,vec2(CannonMenuPos+3,145),vec2(62,15))
+    S:egpColor(142,Grey)
+    
+    S:egpRoundedBoxOutline(143,vec2(SecondaryMenuPos+3,145),vec2(62,15))
+    S:egpColor(143,Grey)
+    
+    S:egpRoundedBoxOutline(144,vec2(DronetargetMenuPos+3,145),vec2(62,15))
+    S:egpColor(144,Grey)
+    
+    
+    S:egpRoundedBoxOutline(146,vec2(CannonMenuPos+3,195),vec2(62,15))
+    S:egpColor(146,Grey)
+    
+    S:egpRoundedBoxOutline(147,vec2(SecondaryMenuPos+3,195),vec2(62,15))
+    S:egpColor(147,Grey)
+    
+    #S:egpRoundedBoxOutline(148,vec2(DronetargetMenuPos+3,195),vec2(62,15))
+    #S:egpColor(148,Grey)
+
+    
+    
+    S:egpRoundedBoxOutline(150,vec2(CannonMenuPos+3,265),vec2(62,15))
+    S:egpColor(150,Grey)
+    
+    
+    #S:egpRoundedBoxOutline(152,vec2(DronetargetMenuPos+3,265),vec2(62,15))
+    #S:egpColor(152,Grey)
+
+    
+    S:egpRoundedBoxOutline(154,vec2(CannonMenuPos+3,230),vec2(62,15))
+    S:egpColor(154,Grey)
+        
+    S:egpRoundedBoxOutline(155,vec2(SecondaryMenuPos+3,230),vec2(62,15))
+    S:egpColor(155,Grey)
+        
+    #S:egpRoundedBoxOutline(156,vec2(DronetargetMenuPos+3,230),vec2(62,15))
+    #S:egpColor(156,Grey)
+    
+    
+    S:egpRoundedBoxOutline(23,vec2(CannonMenuPos+3,300),vec2(62,15))
+    S:egpColor(23,Grey)
+    
+
+    
+    S:egpText(20,"Hydraulics",vec2(CannonMenuPos-30,50))
+    S:egpText(100,"Length",vec2(CannonMenuPos-20,70))
+    
+    S:egpText(21,"Weights",vec2(SecondaryMenuPos-20,50))
+    S:egpText(101,"Wheels",vec2(SecondaryMenuPos-20,70))
+    
+    S:egpText(22,"Tran Cntl",vec2(DronetargetMenuPos-25,50))
+    S:egpText(102,"Engine",vec2(DronetargetMenuPos-20,70))
+    
+    S:egpText(119,"Front",vec2(CannonMenuPos-20,85))
+    S:egpText(120,"Front",vec2(SecondaryMenuPos-20,85))
+    #S:egpText(121,"gears?",vec2(DronetargetMenuPos-20,85))
+    
+    
+    S:egpText(123,toString(FrontLength),vec2(CannonMenuPos-20,103))
+    S:egpColor(123,Grey2)
+    S:egpText(124,toString(FrontWheelWeight),vec2(SecondaryMenuPos-20,103))
+    S:egpColor(124,Grey2)
+    S:egpText(125,"none",vec2(DronetargetMenuPos-20,100))
+    S:egpColor(125,Grey2)
+    
+    
+    S:egpText(103,"Rear",vec2(CannonMenuPos-20,120))
+        S:egpText(127,toString(RearLength),vec2(CannonMenuPos-20,138))
+    S:egpColor(127,Grey2)
+    
+    S:egpText(104,"Rear",vec2(SecondaryMenuPos-20,120))
+        S:egpText(128,toString(RearWheelWeight),vec2(SecondaryMenuPos-20,138))
+    S:egpColor(128,Grey2)
+    
+    S:egpText(105,"Gears?",vec2(DronetargetMenuPos-20,120))
+    S:egpText(129,"Mode 1",vec2(DronetargetMenuPos-20,135))
+    S:egpColor(129,Grey2)
+    
+
+
+    S:egpText(106,"Dampng",vec2(CannonMenuPos-20,155))
+        S:egpText(109,"Front",vec2(CannonMenuPos-20,170))
+        S:egpText(131,toString(FrontDampening),vec2(CannonMenuPos-20,188))
+    S:egpColor(131,Grey2)
+    
+    S:egpText(107,"Plates",vec2(SecondaryMenuPos-20,155))
+        S:egpText(110,"Bottom",vec2(SecondaryMenuPos-20,170))
+        S:egpText(132,toString(BasePlateWeight),vec2(SecondaryMenuPos-20,188))
+    S:egpColor(132,Grey2)
+    
+    #S:egpText(108,"Target",vec2(DronetargetMenuPos-20,155))
+    #S:egpText(111,"Mode",vec2(DronetargetMenuPos-20,170))
+    #S:egpText(133,"Mode 0",vec2(DronetargetMenuPos-20,185))
+    #S:egpColor(133,Grey2)
+    
+    
+        
+    
+    S:egpText(216,"Rear",vec2(CannonMenuPos-25,205))
+    S:egpText(235,toString(RearDampening),vec2(CannonMenuPos-20,223))
+    S:egpColor(235,Grey2)
+    
+    S:egpText(217,"Top",vec2(SecondaryMenuPos-25,205))
+    S:egpText(236,toString(BasePlateWeight),vec2(SecondaryMenuPos-20,223))
+    S:egpColor(236,Grey2)
+    
+    #S:egpText(218,"Targ Type",vec2(DronetargetMenuPos-25,205))
+    #S:egpText(237,"Props",vec2(DronetargetMenuPos-20,220))
+    #S:egpColor(237,Grey2)
+    
+    
+    S:egpText(116,"Constant",vec2(CannonMenuPos-25,240))
+    S:egpText(135,toString(FrontConstant),vec2(CannonMenuPos-20,258))
+    S:egpColor(135,Grey2)
+    
+    
+    #S:egpText(118,"Multi",vec2(DronetargetMenuPos-20,240))
+    #S:egpText(137,"0",vec2(DronetargetMenuPos-20,258))
+    #S:egpColor(137,Grey2)
+    
+    
+    S:egpText(24,"Rear",vec2(CannonMenuPos-20,275))
+    S:egpText(25,toString(RearConstant),vec2(CannonMenuPos-20,293))
+    S:egpColor(25,Grey2)
+    
+
+    S:egpRoundedBoxOutline(153,vec2(CannonMenuPos+3,192),vec2(70,250))
+    
+    }
+    
+if(Shift){
+    
+if(Mouse1|Mouse2|Button1|Button2){    
+    
+   # Targeting=0
+if(Mainmenulock==0){
+if(Button1&~Button1){Mainmenu=Mainmenu-1}
+if(Button2&~Button2){Mainmenu=Mainmenu+1}
+if(Mainmenu<0){Mainmenu=0}
+if(Mainmenu>2){Mainmenu=2}
+}
+if(Mainmenu==0){S:egpRoundedBoxOutline(153,vec2(CannonMenuPos+3,192),vec2(70,250))}
+if(Mainmenu==1){S:egpRoundedBoxOutline(153,vec2(125,192),vec2(70,250))}
+if(Mainmenu==2){S:egpRoundedBoxOutline(153,vec2(195,192),vec2(70,250))}
+if(Mainmenu==3){S:egpRoundedBoxOutline(153,vec2(265,192),vec2(70,250))}
+if(Mainmenu==4){S:egpRoundedBoxOutline(153,vec2(345,192),vec2(70,250))}
+
+if(Mainmenu==0&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu1=!Mainmenu1 Mainmenu2=0 Mainmenu3=0 Mainmenu4=0 Mainmenu5=0}
+if(Mainmenu1==1){S:egpColor(153,Yellow) Mainmenulock=1}
+if(Mainmenu1!=1&Mainmenu==0){S:egpColor(153,White) Mainmenu1=0 Mainmenulock=0} 
+
+if(Mainmenu==1&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu2=!Mainmenu2 Mainmenu1=0 Mainmenu3=0 Mainmenu4=0 Mainmenu5=0}
+if(Mainmenu2==1){S:egpColor(153,Yellow) Mainmenulock=1}
+if(Mainmenu2!=1&Mainmenu==1){S:egpColor(153,White) Mainmenu2=0 Mainmenulock=0} 
+
+if(Mainmenu==2&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu3=!Mainmenu3 Mainmenu1=0 Mainmenu2=0 Mainmenu4=0 Mainmenu5=0}
+if(Mainmenu3==1){S:egpColor(153,Yellow) Mainmenulock=1}
+if(Mainmenu3!=1&Mainmenu==2){S:egpColor(153,White) Mainmenu3=0 Mainmenulock=0} 
+ 
+if(Mainmenu==3&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu4=!Mainmenu4 Mainmenu1=0 Mainmenu2=0 Mainmenu3=0 Mainmenu5=0}
+if(Mainmenu4==1){S:egpColor(153,Yellow) Mainmenulock=1}
+if(Mainmenu4!=1&Mainmenu==3){S:egpColor(153,White) Mainmenu4=0 Mainmenulock=0} 
+
+if(Mainmenu==4&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu5=!Mainmenu5 Mainmenu1=0 Mainmenu2=0 Mainmenu3=0}
+if(Mainmenu5==1){S:egpColor(153,Yellow) Mainmenulock=1}
+if(Mainmenu5!=1&Mainmenu==4){S:egpColor(153,White) Mainmenu5=0 Mainmenulock=0} 
+
+
+
+if(Mainmenu1==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>6){SubMenu1=6}
+}
+if(Mainmenu1==1){
+if(SubMenu1>0){S:egpColor(153,Red)}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(138,Yellow) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(138,Red) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(138,Grey)}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(142,Yellow) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(142,Red) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(142,Grey)}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(146,Yellow) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(146,Red) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(146,Grey)}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(154,Yellow) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(154,Red) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(154,Grey)}
+
+if(SubMenu1==5&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==5&Menu1Sub5==0) {S:egpColor(150,Yellow) Submenu1lock=0}
+if(SubMenu1==5&Menu1Sub5==1) {S:egpColor(150,Red) Submenu1lock=1}
+if(SubMenu1!=5) {S:egpColor(150,Grey)}
+
+if(SubMenu1==6&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==6&Menu1Sub5==0) {S:egpColor(23,Yellow) Submenu1lock=0}
+if(SubMenu1==6&Menu1Sub5==1) {S:egpColor(23,Red) Submenu1lock=1}
+if(SubMenu1!=6) {S:egpColor(23,Grey)}
+}
+
+    
+
+if(Mainmenu2==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>4){SubMenu1=4}
+}
+
+if(Mainmenu2==1){
+if(SubMenu1>0){S:egpColor(153,Red)}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(139,Yellow) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(139,Red) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(139,Grey)}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(143,Yellow) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(143,Red) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(143,Grey)}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(147,Yellow) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(147,Red) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(147,Grey)}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(155,Yellow) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(155,Red) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(155,Grey)}
+
+if(SubMenu1==5&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==5&Menu1Sub5==0) {S:egpColor(151,Yellow) Submenu1lock=0}
+if(SubMenu1==5&Menu1Sub5==1) {S:egpColor(151,Red) Submenu1lock=1}
+if(SubMenu1!=5) {S:egpColor(151,Grey)}
+}
+
+
+
+
+
+if(Mainmenu3==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>1){SubMenu1=1}
+}
+
+if(Mainmenu3==1){
+if(SubMenu1>0){S:egpColor(153,Red)}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(140,Yellow) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(140,Red) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(140,Grey)}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(144,Yellow) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(144,Red) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(144,Grey)}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(148,Yellow) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(148,Red) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(148,Grey)}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(156,Yellow) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(156,Red) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(156,Grey)}
+
+if(SubMenu1==5&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==5&Menu1Sub5==0) {S:egpColor(152,Yellow) Submenu1lock=0}
+if(SubMenu1==5&Menu1Sub5==1) {S:egpColor(152,Red) Submenu1lock=1}
+if(SubMenu1!=5) {S:egpColor(152,Grey)}
+}
+
+
+
+
+
+if(Mainmenu4==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>4){SubMenu1=4}
+}
+
+if(Mainmenu4==1){
+if(SubMenu1>0){S:egpColor(153,Red)}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(141,Yellow) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(141,Red) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(141,Grey)}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(145,Yellow) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(145,Red) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(145,Grey)}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(149,Yellow) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(149,Red) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(149,Grey)}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(157,Yellow) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(157,Red) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(157,Grey)}
+}
+
+
+
+
+if(Mainmenu1&SubMenu1==1&Submenu1lock){
+    if(Button1&~Button1){FrontLength=FrontLength+LengthMulti}
+    if(Button2&~Button2){FrontLength=FrontLength-LengthMulti}
+    if(FrontLength<0){FrontLength=0}
+    S:egpText(123,toString(FrontLength),vec2(30,103))
+}
+
+if(Mainmenu1&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){RearLength=RearLength+LengthMulti}
+    if(Button2&~Button2){RearLength=RearLength-LengthMulti}
+    if(RearLength<0){RearLength=0}
+    S:egpText(127,toString(RearLength),vec2(30,138))
+}
+
+if(Mainmenu1&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){FrontDampening=FrontDampening+DampeningMulti}
+    if(Button2&~Button2){FrontDampening=FrontDampening-DampeningMulti}
+    if(FrontDampening<0){FrontDampening=0}
+    S:egpText(131,toString(FrontDampening),vec2(30,188))
+}
+
+if(Mainmenu1&SubMenu1==4&Submenu1lock){
+    if(Button1&~Button1){RearDampening=RearDampening+DampeningMulti}
+    if(Button2&~Button2){RearDampening=RearDampening-DampeningMulti}
+    if(RearDampening<0){RearDampening=0}
+    S:egpText(235,toString(RearDampening),vec2(30,223))
+}
+
+if(Mainmenu1&SubMenu1==5&Submenu1lock){
+    if(Button1&~Button1){FrontConstant=FrontConstant+ConstantMulti}
+    if(Button2&~Button2){FrontConstant=FrontConstant-ConstantMulti}
+    if(FrontConstant<0){FrontConstant=0}
+    S:egpText(135,toString(FrontConstant),vec2(30,258))
+}
+
+if(Mainmenu1&SubMenu1==6&Submenu1lock){
+    if(Button1&~Button1){RearConstant=RearConstant+ConstantMulti}
+    if(Button2&~Button2){RearConstant=RearConstant-ConstantMulti}
+    if(RearConstant<0){RearConstant=0}
+    S:egpText(25,toString(RearConstant),vec2(30,293))
+}
+
+##################################################
+
+if(Mainmenu2&SubMenu1==1&Submenu1lock){
+    if(Button1&~Button1){FrontWheelWeight=FrontWheelWeight+WeightMulti}
+    if(Button2&~Button2){FrontWheelWeight=FrontWheelWeight-WeightMulti}
+    if(FrontWheelWeight<0){FrontWheelWeight=0}
+    S:egpText(124,toString(FrontWheelWeight),vec2(100,103))
+}
+
+if(Mainmenu2&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){RearWheelWeight=RearWheelWeight+WeightMulti}
+    if(Button2&~Button2){RearWheelWeight=RearWheelWeight-WeightMulti}
+    if(RearWheelWeight<0){RearWheelWeight=0}
+    S:egpText(128,toString(RearWheelWeight),vec2(100,138))
+}
+
+if(Mainmenu2&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){BasePlateWeight=BasePlateWeight+WeightMulti}
+    if(Button2&~Button2){BasePlateWeight=BasePlateWeight-WeightMulti}
+    if(BasePlateWeight<0){BasePlateWeight=0}
+    S:egpText(132,toString(BasePlateWeight),vec2(100,188))
+}
+
+if(Mainmenu2&SubMenu1==4&Submenu1lock){
+    if(Button1&~Button1){TopBarWeight=TopBarWeight+WeightMulti}
+    if(Button2&~Button2){TopBarWeight=TopBarWeight-WeightMulti}
+    if(TopBarWeight<0){TopBarWeight=0}
+    S:egpText(236,toString(TopBarWeight),vec2(100,223))
+}
+
+
+#################################################
+
+if(Mainmenu3&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){Throttle1=Throttle1+ThrottleMulti}
+    if(Button2&~Button2){Throttle1=Throttle1-ThrottleMulti}
+    if(Throttle1<0){Throttle1=0}
+    if(Throttle1>100){Throttle1=100}
+    S:egpText(129,toString(Throttle1),vec2(170,103))
+}
+}
+}
+Throttle=W*Throttle1
+
+
+if(changed(FrontWheelWeight+RearWheelWeight+BasePlateWeight+TopBarWeight)){
+FrontL:setMass(FrontWheelWeight)
+Frontr:setMass(FrontWheelWeight)
+RearL:setMass(RearWheelWeight)
+RearR:setMass(RearWheelWeight)
+BasePlate:setMass(BasePlateWeight)
+TopPlate:setMass(TopBarWeight)
+}

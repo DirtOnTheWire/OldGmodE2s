@@ -1,0 +1,207 @@
+@name Holo Radar beta 0.9
+@inputs 
+@outputs 
+@persist I T S P UA Entities:array Entities2:array AniArr:array NoUpdateArr:array UpdateArr:array ParrentIDs:array EntitiesBackup:array SkipParenting Scale Random1 Random2
+@trigger 
+
+#runOnTick(1)
+interval(100)
+if(first()){I=0 T=0 S=0 P=0 UA=1
+AniArr=array()
+NoUpdateArr=array()
+ParrentIDs=array()
+UpdateArr=array()
+
+findClearWhiteList()
+findClearBlackList()
+#findExcludePlayer("DIRT")
+findExcludeClass("weapon*")
+findExcludeClass("gmod_hands*")
+findExcludeClass("gmod_tool")
+findExcludeClass("gmod_cameras*")
+findExcludeClass("weapon*")
+findExcludeClass("player")
+#findExcludeClass("gmod_wire_hologram")
+findExcludeClass("gmod_wire_hydraulic")
+#findExcludeClass("gmod_wire_expression2")
+findExcludeClass("gmod_wire_lightsq")
+#findExcludeClass("props*")
+#findExcludeClass("acf*")
+
+#findExcludeClass("prop_physics")
+#findIncludeClass("player")
+#findByClass("player")
+#findByClass("npc*")
+#findByClass("gmod_wire_hologram")
+#findByClass("acf*")
+#findByClass("player")
+#findExcludePlayerProps("*")
+findIncludePlayerProps("wire")
+#findIncludePlayerProps("dirt")
+#findExcludePlayer("DIRT")
+#findExcludeClass("gmod_wire_hologram")
+#findExcludeClass("player")
+#findExcludeClass("player_pickup")
+#findExcludeClass("props*")
+#findExcludeClass("acf*")
+#findExcludeClass("gmod_wire*")
+#findExcludeClass("weapon_physgun")
+#findExcludeClass("gmod_camera")
+
+#findByClass("*vehic*")
+#findByModel("*vehica*")
+#findAllowPlayer("dirt")
+#findInBox(vec(-16384, -16384, -16384), vec(16483, 16384, 16384))
+findInSphere(entity():pos(),30000)
+#find()
+Entities = findToArray()
+#Entities = players()
+#Entities = findSortByDistance(entity():pos())
+SkipParenting=1
+Scale = 1
+Rand=800
+#Random1=random(-Rand,Rand)
+#Random2=random(-Rand,Rand)
+Random1=-300
+Random2=1000
+}
+
+
+
+if(T==0&holoCanCreate()==1){
+#for (I = 1, Entities:count()) {
+while (I < Entities:count()&&perf()&T==0) {
+#if (I < Entities:count()) {
+    Entity = Entities[I+1, entity]
+    EntityID = Entity:id()
+    ParrentIDs[EntityID, number]=I
+    
+    #print(Entity:type())
+    #print(Entities:count())
+    
+    
+    holoCreate(EntityID)
+    
+
+    #holoPos(EntityID, entity():pos() + vec(0, 0, 200) + Entity:pos() * Scale)
+    holoPos(EntityID, ( Entity:pos() * Scale) + vec(Random1, Random2, 0))
+    holoAng(EntityID, Entity:angles())
+    #if(Entity:type()=="gmod_wire_hologram"){
+    #Rad=Entity:radius()
+    #holoScale(EntityID, vec(1,1,1)*(Rad*1))
+    #}
+    #else{
+    holoScale(EntityID, vec(1,1,1)*Scale)
+    #holoScale(EntityID, (vec(1,1,1)+Entity:boxSize())*0.01)
+    #}
+    
+    holoMaterial(EntityID, Entity:getMaterial())
+    holoColor(EntityID, Entity:getColor(), Entity:getAlpha())
+    holoAlpha(EntityID, Entity:getAlpha())    
+    holoModel(EntityID, Entity:model())
+    I++
+##printColor(vec(255,0,0),Entities:count() + " " +I)
+if(I==Entities:count()){T=1 EntitiesBackup=Entities}
+}
+}
+#T=1
+#else{ I=0}
+
+
+
+if(T==1){
+#findClearWhiteList()
+#findClearBlackList()
+#findIncludePlayerProps("DIRT")
+#findInBox(vec(-16384, -16384, -16384), vec(16483, 16384, 16384))
+#Entities = findToArray()
+#printColor(vec(255,0,0),Entities:count() + " " +"entities found.")
+interval(300)
+#T=0
+#S=1
+print(Entities:count())
+}
+
+if(SkipParenting==1&I==Entities:count()){UpdateArr=Entities T=4}
+
+
+    
+while (P < EntitiesBackup:count()&&perf()&SkipParenting==0&T==1) {
+    Entity2 = EntitiesBackup[P+1, entity]
+    EntityID2 = Entity2:id()
+    #if(!NoUpdateArr[P, entity]&P==1){
+    holoPos(EntityID2, ( Entity2:pos() * Scale) + vec(Random1, Random2, 0))
+    holoAng(EntityID2, Entity2:angles())
+    #holoColor(EntityID2,vec(255,0,0))
+    P++
+if(P==EntitiesBackup:count()){T=2 P=0}
+}
+    
+    
+#for (P = 1, EntitiesBackup:count()) {
+#if (P < EntitiesBackup:count()) {
+while (P < EntitiesBackup:count()&&perf()&SkipParenting==0&T==2) {
+    Entity2 = EntitiesBackup[P+1, entity]
+    EntityID2 = Entity2:id()
+    #if(!NoUpdateArr[P, entity]&P==1){
+
+
+    #else{print("skipped")}
+    #print("wtf")
+
+    Parent2 = Entity2:parent():id()
+    if(Parent2){
+    ParrentEntitiyId = ParrentIDs[Parent2, number]
+    holoParent(EntityID2,(holoEntity(Parent2)))
+    #holoColor(EntityID2,vec(255,0,0))
+    #NoUpdateArr[P, entity] = holoEntity(EntityID2)
+    #Entities:remove(P)
+    #print(Parent2)
+    #}
+    }
+    else{
+        UA++
+        UpdateArr[UA, entity] = Entity2
+    }
+    P++
+if(P==EntitiesBackup:count()){T=4}
+}
+
+
+
+
+
+#while(T){
+#while(perf()){
+
+#for (S = 1, UpdateArr:count()) {
+#if (S < UpdateArr:count()) {
+while (S < UpdateArr:count()&&perf(10)&T==4) {
+    Entity3 = UpdateArr[S+1, entity]
+    EntityID3 = Entity3:id()
+    Type=Entity3:type()
+    #print(UpdateArr:count())
+    if(Type=="player") { #|Type=="gmod_wire_hologram"){
+    #EntAnim = Entity3:getAnimation()
+    EntAnim = Entity3:getAnimID()
+    
+    Arrmem=AniArr[EntityID3, number]
+    if(Arrmem!=EntAnim){
+    AniArr[EntityID3, number] = EntAnim
+    holoAnim(EntityID3, EntAnim)
+    #printColor(vec(255,0,0),Arrmem+ " " + EntAnim)
+    }
+    }
+    
+
+    holoPos(EntityID3, ( Entity3:pos() * Scale) + vec(Random1, Random2, 0))
+    holoAng(EntityID3, Entity3:angles())
+    #holoColor(EntityID3,vec(0,0,255))
+
+    
+S++
+if(S==UpdateArr:count()){S=0}
+}
+#S=0
+#P=0
+#}

@@ -1,0 +1,901 @@
+@name dirts dirty hud
+@inputs Button1 Button2 S:wirelink Mouse1 Mouse2 Reset
+@persist T I TargCount Players:array Mainmenu Mainmenu1 Mainmenu2 Mainmenu3 Mainmenu4 Mainmenu5 Mainmenulock SubMenu1
+@persist Menu1Sub1 Menu1Sub2 Menu1Sub3 Menu1Sub4 Menu1Sub5 Submenu1lock CannonTarg SecondaryTarg DroneTarg AllTarg 
+@persist Menu11 Menu12 Menu13 Menu14 Menu21 Menu22 Menu23 Menu24 Menu31 Menu32 Menu33 Menu34 Menu41 Menu42 Menu43 MaxIndex PlayersCount
+@persist Menu51 Menu52 Menu53 CannonTargClass SecondaryTargClass DroneTargClass CannonTarget:entity SecondaryTarget:entity DroneTarget:entity 
+@persist CannonFireMode CannonTargMode SecondaryFireMode SecondaryTargMode DroneFireMode DroneTargMode DroneCtrl DroneMode Camera
+@persist CannonMenu SecondaryMenu AllTargetMenu DronetargetMenu ShipControlMenu CannonMenuPos SecondaryMenuPos DronetargetMenuPos ShipControlMenuPos AllTargetMenuPos 
+@outputs TargCount TargHud CannonTarget:entity SecondaryTarget:entity DroneTarget:entity 
+@outputs CannonFireMode CannonTargMode SecondaryFireMode SecondaryTargMode DroneFireMode DroneTargMode
+@outputs CannonTargClass SecondaryTargClass DroneTargClass DroneCtrl DroneMode Camera
+@trigger all
+interval(200)
+#if(Reset){reset()}
+if(first()|duped()|Reset){TargCount=0,Cursor = "->"
+    #entity():setAlpha(0)
+    Menu11=0
+    Menu12=0
+    Menu13=0
+    Menu14=0 
+    Menu21=0 
+    Menu22=0 
+    Menu23=0 
+    Menu24=0 
+    Menu31=0 
+    Menu32=0 
+    Menu33=0 
+    Menu34=0 
+    Menu41=0 
+    Menu42=0 
+    Menu43=0
+    Menu51=0 
+    Menu52=0 
+    Menu53=0
+    CannonTarg=0
+    SecondaryTarg=0
+    DroneTarg=0
+    AllTarg=0
+    
+    CannonTarget=noentity()
+    SecondaryTarget=noentity()
+    DroneTarget=noentity()
+    
+    CannonTargClass=1
+    SecondaryTargClass=1
+    DroneTargClass=1
+    
+    CannonFireMode=1 
+    CannonTargMode=0 
+    SecondaryFireMode=1 
+    SecondaryTargMode=0 
+    DroneFireMode=1 
+    DroneTargMode=0
+    
+    DroneCtrl=1
+    DroneMode=1
+    
+    CannonMenu=1
+    SecondaryMenu=1
+    DronetargetMenu=1
+    AllTargetMenu=1
+    ShipControlMenu=1
+    
+    CannonMenuPos=50
+    SecondaryMenuPos=120
+    DronetargetMenuPos=190
+    AllTargetMenuPos=260
+    ShipControlMenuPos=335
+    
+    S:egpClear()
+    S:egpText(2,"No Target",vec2(30,270))
+    
+    S:egpRoundedBoxOutline(138,vec2(CannonMenuPos+3,110),vec2(62,15))
+    S:egpColor(138,vec(125,125,125))
+    
+    
+    S:egpRoundedBoxOutline(139,vec2(SecondaryMenuPos+3,110),vec2(62,15))
+    S:egpColor(139,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(140,vec2(DronetargetMenuPos+3,110),vec2(62,15))
+    S:egpColor(140,vec(125,125,125))
+
+    S:egpRoundedBoxOutline(141,vec2(AllTargetMenuPos+3,110),vec2(62,15))
+    S:egpColor(141,vec(125,125,125))
+    
+    
+    S:egpRoundedBoxOutline(142,vec2(CannonMenuPos+3,145),vec2(62,15))
+    S:egpColor(142,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(143,vec2(SecondaryMenuPos+3,145),vec2(62,15))
+    S:egpColor(143,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(144,vec2(DronetargetMenuPos+3,145),vec2(62,15))
+    S:egpColor(144,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(145,vec2(AllTargetMenuPos+3,145),vec2(62,15))
+    S:egpColor(145,vec(125,125,125))
+    
+    
+    S:egpRoundedBoxOutline(146,vec2(CannonMenuPos+3,195),vec2(62,15))
+    S:egpColor(146,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(147,vec2(SecondaryMenuPos+3,195),vec2(62,15))
+    S:egpColor(147,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(148,vec2(DronetargetMenuPos+3,195),vec2(62,15))
+    S:egpColor(148,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(149,vec2(AllTargetMenuPos+3,195),vec2(62,15))
+    S:egpColor(149,vec(125,125,125))
+    
+    
+    S:egpRoundedBoxOutline(150,vec2(CannonMenuPos+3,265),vec2(62,15))
+    S:egpColor(150,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(151,vec2(SecondaryMenuPos+3,265),vec2(62,15))
+    S:egpColor(151,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(152,vec2(DronetargetMenuPos+3,265),vec2(62,15))
+    S:egpColor(152,vec(125,125,125))
+
+    
+    S:egpRoundedBoxOutline(154,vec2(CannonMenuPos+3,230),vec2(62,15))
+    S:egpColor(154,vec(125,125,125))
+        
+    S:egpRoundedBoxOutline(155,vec2(SecondaryMenuPos+3,230),vec2(62,15))
+    S:egpColor(155,vec(125,125,125))
+        
+    S:egpRoundedBoxOutline(156,vec2(DronetargetMenuPos+3,230),vec2(62,15))
+    S:egpColor(156,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(157,vec2(AllTargetMenuPos+3,230),vec2(62,15))
+    S:egpColor(157,vec(125,125,125))
+    
+    
+    S:egpRoundedBoxOutline(168,vec2(ShipControlMenuPos+3,110),vec2(62,15))
+    S:egpColor(168,vec(125,125,125))
+        
+    S:egpRoundedBoxOutline(169,vec2(ShipControlMenuPos+3,158),vec2(62,15))
+    S:egpColor(169,vec(125,125,125))
+    
+    S:egpRoundedBoxOutline(170,vec2(ShipControlMenuPos+3,193),vec2(62,15))
+    S:egpColor(170,vec(125,125,125))
+
+    
+    S:egpText(100,"Cannons",vec2(CannonMenuPos-20,70))
+    S:egpText(101,"Secndry",vec2(SecondaryMenuPos-20,70))
+    S:egpText(102,"Drone",vec2(DronetargetMenuPos-20,70))
+    
+    S:egpText(119,"Target",vec2(CannonMenuPos-20,85))
+    S:egpText(120,"Target",vec2(SecondaryMenuPos-20,85))
+    S:egpText(121,"Target",vec2(DronetargetMenuPos-20,85))
+    
+    
+    S:egpText(123,"none",vec2(CannonMenuPos-20,100))
+    S:egpColor(123,vec(200,200,200))
+    S:egpText(124,"none",vec2(SecondaryMenuPos-20,100))
+    S:egpColor(124,vec(200,200,200))
+    S:egpText(125,"none",vec2(DronetargetMenuPos-20,100))
+    S:egpColor(125,vec(200,200,200))
+    
+    
+    S:egpText(103,"firemode",vec2(CannonMenuPos-20,120))
+        S:egpText(127,"Mode 1",vec2(CannonMenuPos-20,135))
+    S:egpColor(127,vec(200,200,200))
+    
+    S:egpText(104,"firemode",vec2(SecondaryMenuPos-20,120))
+        S:egpText(128,"Mode 1",vec2(SecondaryMenuPos-20,135))
+    S:egpColor(128,vec(200,200,200))
+    
+    S:egpText(105,"firemode",vec2(DronetargetMenuPos-20,120))
+        S:egpText(129,"Mode 1",vec2(DronetargetMenuPos-20,135))
+    S:egpColor(129,vec(200,200,200))
+    
+
+
+    S:egpText(106,"Target",vec2(CannonMenuPos-20,155))
+        S:egpText(109,"Mode",vec2(CannonMenuPos-20,170))
+        S:egpText(131,"Mode 0",vec2(CannonMenuPos-20,185))
+    S:egpColor(131,vec(200,200,200))
+    
+    S:egpText(107,"Target",vec2(SecondaryMenuPos-20,155))
+        S:egpText(110,"Mode",vec2(SecondaryMenuPos-20,170))
+        S:egpText(132,"Mode 0",vec2(SecondaryMenuPos-20,185))
+    S:egpColor(132,vec(200,200,200))
+    
+    S:egpText(108,"Target",vec2(DronetargetMenuPos-20,155))
+        S:egpText(111,"Mode",vec2(DronetargetMenuPos-20,170))
+        S:egpText(133,"Mode 0",vec2(DronetargetMenuPos-20,185))
+    S:egpColor(133,vec(200,200,200))
+    
+    
+        
+    S:egpText(112,"All Guns",vec2(AllTargetMenuPos-20,70))
+    S:egpText(122,"Target",vec2(AllTargetMenuPos-20,85))
+    
+    S:egpText(126,"none",vec2(AllTargetMenuPos-20,100))
+    S:egpColor(126,vec(200,200,200))
+    
+    S:egpText(113,"firemode",vec2(AllTargetMenuPos-20,120))
+        S:egpText(130,"Mode 1",vec2(AllTargetMenuPos-20,135))
+    S:egpColor(130,vec(200,200,200))
+    
+    S:egpText(114,"Target",vec2(AllTargetMenuPos-20,155))
+        S:egpText(115,"Mode",vec2(AllTargetMenuPos-20,170))
+        S:egpText(134,"Mode 0",vec2(AllTargetMenuPos-20,185))
+    S:egpColor(134,vec(200,200,200))
+    
+        
+    S:egpText(116,"Multi",vec2(CannonMenuPos-20,240))
+    S:egpText(135,"0",vec2(CannonMenuPos-20,258))
+    S:egpColor(135,vec(200,200,200))
+    
+    S:egpText(117,"Multi",vec2(SecondaryMenuPos-20,240))
+    S:egpText(136,"0",vec2(SecondaryMenuPos-20,258))
+    S:egpColor(136,vec(200,200,200))
+    
+    S:egpText(118,"Multi",vec2(DronetargetMenuPos-20,240))
+    S:egpText(137,"0",vec2(DronetargetMenuPos-20,258))
+    S:egpColor(137,vec(200,200,200))
+    
+    
+    S:egpText(216,"Targ Type",vec2(CannonMenuPos-25,205))
+    S:egpText(235,"Props",vec2(CannonMenuPos-20,220))
+    S:egpColor(235,vec(200,200,200))
+    
+    S:egpText(217,"Targ Type",vec2(SecondaryMenuPos-25,205))
+    S:egpText(236,"Props",vec2(SecondaryMenuPos-20,220))
+    S:egpColor(236,vec(200,200,200))
+    
+    S:egpText(218,"Targ Type",vec2(DronetargetMenuPos-25,205))
+    S:egpText(237,"Props",vec2(DronetargetMenuPos-20,220))
+    S:egpColor(237,vec(200,200,200))
+    
+    S:egpText(219,"Targ Type",vec2(AllTargetMenuPos-25,205))
+    S:egpText(238,"Props",vec2(AllTargetMenuPos-20,220))
+    S:egpColor(238,vec(200,200,200))
+    
+    S:egpText(160,"ShipCtrl",vec2(ShipControlMenuPos-20,70))
+    
+    S:egpText(161,"Camera",vec2(ShipControlMenuPos-20,85))   
+    S:egpText(162,"1st Pers",vec2(ShipControlMenuPos-20,100))
+    S:egpColor(162,vec(200,200,200))
+    
+    S:egpText(163,"DroneCtrl",vec2(ShipControlMenuPos-20,120))
+
+    S:egpText(164,"CtrlMode",vec2(ShipControlMenuPos-20,135))    
+    S:egpText(165,"Auto Plt",vec2(ShipControlMenuPos-20,150))
+    S:egpColor(165,vec(200,200,200))
+    
+    S:egpText(166,"Flight",vec2(ShipControlMenuPos-20,170))
+    S:egpText(167,"Docked",vec2(ShipControlMenuPos-20,185))
+    S:egpColor(167,vec(200,200,200))
+
+    S:egpRoundedBoxOutline(153,vec2(CannonMenuPos+5,170),vec2(70,205))
+    
+    }
+    
+
+    
+if(Mouse1|Mouse2|Button1|Button2){    
+    
+   # Targeting=0
+if(Mainmenulock==0){
+if(Button1&~Button1){Mainmenu=Mainmenu+1}
+if(Button2&~Button2){Mainmenu=Mainmenu-1}
+if(Mainmenu<0){Mainmenu=0}
+if(Mainmenu>4){Mainmenu=4}
+}
+if(Mainmenu==0){S:egpRoundedBoxOutline(153,vec2(CannonMenuPos+5,170),vec2(70,205))}
+if(Mainmenu==1){S:egpRoundedBoxOutline(153,vec2(125,170),vec2(70,205))}
+if(Mainmenu==2){S:egpRoundedBoxOutline(153,vec2(195,170),vec2(70,205))}
+if(Mainmenu==3){S:egpRoundedBoxOutline(153,vec2(265,170),vec2(70,205))}
+if(Mainmenu==4){S:egpRoundedBoxOutline(153,vec2(345,170),vec2(70,205))}
+
+if(Mainmenu==0&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu1=!Mainmenu1 Mainmenu2=0 Mainmenu3=0 Mainmenu4=0 Mainmenu5=0}
+if(Mainmenu1==1){S:egpColor(153,vec(255,200,100)) Mainmenulock=1}
+if(Mainmenu1!=1&Mainmenu==0){S:egpColor(153,vec(255,255,255)) Mainmenu1=0 Mainmenulock=0} 
+
+if(Mainmenu==1&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu2=!Mainmenu2 Mainmenu1=0 Mainmenu3=0 Mainmenu4=0 Mainmenu5=0}
+if(Mainmenu2==1){S:egpColor(153,vec(255,200,100)) Mainmenulock=1}
+if(Mainmenu2!=1&Mainmenu==1){S:egpColor(153,vec(255,255,255)) Mainmenu2=0 Mainmenulock=0} 
+
+if(Mainmenu==2&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu3=!Mainmenu3 Mainmenu1=0 Mainmenu2=0 Mainmenu4=0 Mainmenu5=0}
+if(Mainmenu3==1){S:egpColor(153,vec(255,200,100)) Mainmenulock=1}
+if(Mainmenu3!=1&Mainmenu==2){S:egpColor(153,vec(255,255,255)) Mainmenu3=0 Mainmenulock=0} 
+ 
+if(Mainmenu==3&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu4=!Mainmenu4 Mainmenu1=0 Mainmenu2=0 Mainmenu3=0 Mainmenu5=0}
+if(Mainmenu4==1){S:egpColor(153,vec(255,200,100)) Mainmenulock=1}
+if(Mainmenu4!=1&Mainmenu==3){S:egpColor(153,vec(255,255,255)) Mainmenu4=0 Mainmenulock=0} 
+
+if(Mainmenu==4&(Mouse2&~Mouse2)&SubMenu1==0){Mainmenu5=!Mainmenu5 Mainmenu1=0 Mainmenu2=0 Mainmenu3=0}
+if(Mainmenu5==1){S:egpColor(153,vec(255,200,100)) Mainmenulock=1}
+if(Mainmenu5!=1&Mainmenu==4){S:egpColor(153,vec(255,255,255)) Mainmenu5=0 Mainmenulock=0} 
+
+
+
+if(Mainmenu1==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>5){SubMenu1=5}
+}
+if(Mainmenu1==1){
+if(SubMenu1>0){S:egpColor(153,vec(255,100,100))}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(138,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(138,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(138,vec(100,100,100))}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(142,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(142,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(142,vec(100,100,100))}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(146,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(146,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(146,vec(100,100,100))}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(154,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(154,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(154,vec(100,100,100))}
+
+if(SubMenu1==5&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==5&Menu1Sub5==0) {S:egpColor(150,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==5&Menu1Sub5==1) {S:egpColor(150,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=5) {S:egpColor(150,vec(100,100,100))}
+}
+
+    
+
+if(Mainmenu2==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>5){SubMenu1=5}
+}
+
+if(Mainmenu2==1){
+if(SubMenu1>0){S:egpColor(153,vec(255,100,100))}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(139,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(139,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(139,vec(100,100,100))}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(143,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(143,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(143,vec(100,100,100))}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(147,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(147,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(147,vec(100,100,100))}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(155,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(155,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(155,vec(100,100,100))}
+
+if(SubMenu1==5&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==5&Menu1Sub5==0) {S:egpColor(151,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==5&Menu1Sub5==1) {S:egpColor(151,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=5) {S:egpColor(151,vec(100,100,100))}
+}
+
+
+
+
+
+if(Mainmenu3==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>5){SubMenu1=5}
+}
+
+if(Mainmenu3==1){
+if(SubMenu1>0){S:egpColor(153,vec(255,100,100))}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(140,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(140,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(140,vec(100,100,100))}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(144,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(144,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(144,vec(100,100,100))}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(148,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(148,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(148,vec(100,100,100))}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(156,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(156,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(156,vec(100,100,100))}
+
+if(SubMenu1==5&(Mouse2&~Mouse2)){ Menu1Sub5=!Menu1Sub5}
+if(SubMenu1==5&Menu1Sub5==0) {S:egpColor(152,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==5&Menu1Sub5==1) {S:egpColor(152,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=5) {S:egpColor(152,vec(100,100,100))}
+}
+
+
+
+
+
+if(Mainmenu4==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>4){SubMenu1=4}
+}
+
+if(Mainmenu4==1){
+if(SubMenu1>0){S:egpColor(153,vec(255,100,100))}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(141,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(141,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(141,vec(100,100,100))}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(145,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(145,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(145,vec(100,100,100))}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(149,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(149,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(149,vec(100,100,100))}
+
+if(SubMenu1==4&(Mouse2&~Mouse2)){ Menu1Sub4=!Menu1Sub4}
+if(SubMenu1==4&Menu1Sub4==0) {S:egpColor(157,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==4&Menu1Sub4==1) {S:egpColor(157,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=4) {S:egpColor(157,vec(100,100,100))}
+}
+
+
+if(Mainmenu5==1&Submenu1lock==0){
+if(Button1&~Button1){SubMenu1=SubMenu1+1}
+if(Button2&~Button2){SubMenu1=SubMenu1-1}
+if(SubMenu1<0){SubMenu1=0}
+if(SubMenu1>3){SubMenu1=3}
+}
+if(Mainmenu5==1){
+if(SubMenu1>0){S:egpColor(153,vec(255,100,100))}
+
+if(SubMenu1==1&(Mouse2&~Mouse2)){ Menu1Sub1=!Menu1Sub1}
+if(SubMenu1==1&Menu1Sub1==0) {S:egpColor(168,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==1&Menu1Sub1==1) {S:egpColor(168,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=1) {S:egpColor(168,vec(100,100,100))}
+
+if(SubMenu1==2&(Mouse2&~Mouse2)){ Menu1Sub2=!Menu1Sub2}
+if(SubMenu1==2&Menu1Sub2==0) {S:egpColor(169,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==2&Menu1Sub2==1) {S:egpColor(169,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=2) {S:egpColor(169,vec(100,100,100))}
+
+if(SubMenu1==3&(Mouse2&~Mouse2)){ Menu1Sub3=!Menu1Sub3}
+if(SubMenu1==3&Menu1Sub3==0) {S:egpColor(170,vec(255,200,100)) Submenu1lock=0}
+if(SubMenu1==3&Menu1Sub3==1) {S:egpColor(170,vec(255,100,100)) Submenu1lock=1}
+if(SubMenu1!=3) {S:egpColor(170,vec(100,100,100))}
+}
+
+if(Mainmenu4&Menu1Sub1==1){ 
+if(Button1&~Button1){AllTarg=AllTarg+1}
+if(Button2&~Button2){AllTarg=AllTarg-1}
+if(AllTarg<0){AllTarg=0}
+if(AllTarg>MaxIndex){AllTarg=MaxIndex}
+S:egpText(1,"->",vec2(10,(AllTarg*15)+275))
+AllTarget=Players:entity(AllTarg)
+if(AllTarget) {S:egpText(126,(AllTarget:name()):sub(0,8),vec2(240,100))}
+if(AllTarg==0){S:egpText(126,"none",vec2(240,100))}
+
+if(changed(AllTarg)){
+CannonTarget=Players:entity(AllTarg)
+SecondaryTarget=Players:entity(AllTarg)
+DroneTarget=Players:entity(AllTarg)
+CannonTarg=AllTarg
+SecondaryTarg=AllTarg
+DroneTarg=AllTarg}
+}
+
+if(Mainmenu1&Menu1Sub1==1){ 
+if(Button1&~Button1){CannonTarg=CannonTarg+1}
+if(Button2&~Button2){CannonTarg=CannonTarg-1}
+if(CannonTarg<0){CannonTarg=0}
+if(CannonTarg>MaxIndex){CannonTarg=MaxIndex}
+S:egpText(1,"->",vec2(10,(CannonTarg*15)+275))
+CannonTarget=Players:entity(CannonTarg)}
+if(CannonTarget) {S:egpText(123,(CannonTarget:name()):sub(0,8),vec2(30,100))}
+if(CannonTarg==0){S:egpText(123,"none",vec2(30,100))}
+
+
+if(Mainmenu2&Menu1Sub1==1){
+if(Button1&~Button1){SecondaryTarg=SecondaryTarg+1}
+if(Button2&~Button2){SecondaryTarg=SecondaryTarg-1}
+if(SecondaryTarg<0){SecondaryTarg=0}
+if(SecondaryTarg>MaxIndex){SecondaryTarg=MaxIndex}
+ S:egpText(1,"->",vec2(10,(SecondaryTarg*15)+275))
+SecondaryTarget=Players:entity(SecondaryTarg)}
+if(SecondaryTarget) {S:egpText(124,(SecondaryTarget:name()):sub(0,8),vec2(100,100))}
+if(SecondaryTarg==0){S:egpText(124,"none",vec2(100,100))}
+
+if(Mainmenu3&Menu1Sub1==1){ 
+if(Button1&~Button1){DroneTarg=DroneTarg+1}
+if(Button2&~Button2){DroneTarg=DroneTarg-1}
+if(DroneTarg<0){DroneTarg=0}
+if(DroneTarg>MaxIndex){DroneTarg=MaxIndex}
+S:egpText(1,"->",vec2(10,(DroneTarg*15)+275))
+DroneTarget=Players:entity(DroneTarg)}
+if(DroneTarget) {S:egpText(125,(DroneTarget:name()):sub(0,8),vec2(170,100))}
+if(DroneTarg==0){S:egpText(125,"none",vec2(170,100))}
+
+
+
+#if(CannonTarget) {S:egpText(119,Target:name(),vec2(30,85))}
+
+
+if(Mainmenu1&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){Menu11=Menu11+1}
+    if(Button2&~Button2){Menu11=Menu11-1}
+    if(Menu11>3){Menu11=3}
+    if(Menu11<1){Menu11=1}
+    if(Menu11==1){S:egpText(127,"Mode 1",vec2(30,135)) CannonFireMode=1}
+    if(Menu11==2){S:egpText(127,"Mode 2",vec2(30,135)) CannonFireMode=2}
+    if(Menu11==3){S:egpText(127,"Mode 3",vec2(30,135)) CannonFireMode=3}
+}
+
+if(Mainmenu1&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){Menu12=Menu12+1}
+    if(Button2&~Button2){Menu12=Menu12-1}
+    if(Menu12>4){Menu12=4}
+    if(Menu12<0){Menu12=0}
+    if(Menu12==0){S:egpText(131,"Mode 0",vec2(30,185)) CannonTargMode=0}
+    if(Menu12==1){S:egpText(131,"Mode 1",vec2(30,185)) CannonTargMode=1}
+    if(Menu12==2){S:egpText(131,"Mode 2",vec2(30,185)) CannonTargMode=2}
+    if(Menu12==3){S:egpText(131,"Mode 3",vec2(30,185)) CannonTargMode=3}
+    if(Menu12==4){S:egpText(131,"Mode 4",vec2(30,185)) CannonTargMode=4}
+}
+
+if(Mainmenu1&SubMenu1==4&Submenu1lock){
+    if(Button1&~Button1){Menu13=Menu13+1}
+    if(Button2&~Button2){Menu13=Menu13-1}
+    if(Menu13>6){Menu13=6}
+    if(Menu13<1){Menu13=1}
+    if(Menu13==1){S:egpText(235,"Props",vec2(30,220)) 
+        CannonTargClass=1}
+    if(Menu13==2){S:egpText(235,"Wire",vec2(30,220)) 
+        CannonTargClass=2}
+    if(Menu13==3){S:egpText(235,"Seat",vec2(30,220)) 
+        CannonTargClass=3}
+    if(Menu13==4){S:egpText(235,"Gyro",vec2(30,220)) 
+        CannonTargClass=4}
+    if(Menu13==5){S:egpText(235,"Sents",vec2(30,220)) 
+        CannonTargClass=5}
+    if(Menu13==6){S:egpText(235,"PewPew",vec2(30,220)) 
+        CannonTargClass=6}
+}
+
+if(Mainmenu1&SubMenu1==5&Submenu1lock){
+    if(Button1&~Button1){Menu14=Menu14+1}
+    if(Button2&~Button2){Menu14=Menu14-1}
+    if(Menu14<0){Menu14=0}
+    S:egpText(135,toString(Menu14),vec2(30,258))
+}
+##################################################
+
+if(Mainmenu2&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){Menu21=Menu21+1}
+    if(Button2&~Button2){Menu21=Menu21-1}
+    if(Menu21>3){Menu21=3}
+    if(Menu21<1){Menu21=1}
+    if(Menu21==1){S:egpText(128,"Mode 1",vec2(100,135)) SecondaryFireMode=1}
+    if(Menu21==2){S:egpText(128,"Mode 2",vec2(100,135)) SecondaryFireMode=2}
+    if(Menu21==3){S:egpText(128,"Mode 3",vec2(100,135)) SecondaryFireMode=3}
+}
+
+if(Mainmenu2&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){Menu22=Menu22+1}
+    if(Button2&~Button2){Menu22=Menu22-1}
+    if(Menu22>4){Menu22=4}
+    if(Menu22<0){Menu22=0}
+    if(Menu22==0){S:egpText(132,"Mode 0",vec2(100,185)) SecondaryTargMode=0}
+    if(Menu22==1){S:egpText(132,"Mode 1",vec2(100,185)) SecondaryTargMode=1}
+    if(Menu22==2){S:egpText(132,"Mode 2",vec2(100,185)) SecondaryTargMode=2}
+    if(Menu22==3){S:egpText(132,"Mode 3",vec2(100,185)) SecondaryTargMode=3}
+    if(Menu22==4){S:egpText(132,"Mode 4",vec2(100,185)) SecondaryTargMode=4}
+}
+
+if(Mainmenu2&SubMenu1==4&Submenu1lock){
+    if(Button1&~Button1){Menu23=Menu23+1}
+    if(Button2&~Button2){Menu23=Menu23-1}
+    if(Menu23>6){Menu23=6}
+    if(Menu23<1){Menu23=1}
+    if(Menu23==1){S:egpText(236,"Props",vec2(100,220)) 
+        SecondaryTargClass=1}
+    if(Menu23==2){S:egpText(236,"Wire",vec2(100,220)) 
+        SecondaryTargClass=2}
+    if(Menu23==3){S:egpText(236,"Seat",vec2(100,220)) 
+        SecondaryTargClass=3}
+    if(Menu23==4){S:egpText(236,"Gyro",vec2(100,220)) 
+        SecondaryTargClass=4}
+    if(Menu23==5){S:egpText(236,"Sents",vec2(100,220)) 
+        SecondaryTargClass=5}
+    if(Menu23==6){S:egpText(236,"PewPew",vec2(100,220)) 
+        SecondaryTargClass=6}
+}
+
+if(Mainmenu2&SubMenu1==5&Submenu1lock){
+    if(Button1&~Button1){Menu24=Menu24+1}
+    if(Button2&~Button2){Menu24=Menu24-1}
+    if(Menu24<0){Menu24=0}
+    S:egpText(136,toString(Menu24),vec2(100,258))
+}
+
+
+#################################################
+
+if(Mainmenu3&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){Menu31=Menu31+1}
+    if(Button2&~Button2){Menu31=Menu31-1}
+    if(Menu31>3){Menu31=3}
+    if(Menu31<1){Menu31=1}
+    if(Menu31==1){S:egpText(129,"Mode 1",vec2(170,135)) DroneFireMode=1}
+    if(Menu31==2){S:egpText(129,"Mode 2",vec2(170,135)) DroneFireMode=2}
+    if(Menu31==3){S:egpText(129,"Mode 3",vec2(170,135)) DroneFireMode=3}
+}
+
+if(Mainmenu3&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){Menu32=Menu32+1}
+    if(Button2&~Button2){Menu32=Menu32-1}
+    if(Menu32>4){Menu32=4}
+    if(Menu32<0){Menu32=0}
+    if(Menu32==0){S:egpText(133,"Mode 0",vec2(170,185)) DroneTargMode=0}
+    if(Menu32==1){S:egpText(133,"Mode 1",vec2(170,185)) DroneTargMode=1}
+    if(Menu32==2){S:egpText(133,"Mode 2",vec2(170,185)) DroneTargMode=2}
+    if(Menu32==3){S:egpText(133,"Mode 3",vec2(170,185)) DroneTargMode=3}
+    if(Menu32==4){S:egpText(133,"Mode 4",vec2(170,185)) DroneTargMode=4}
+}
+
+if(Mainmenu3&SubMenu1==4&Submenu1lock){
+    if(Button1&~Button1){Menu33=Menu33+1}
+    if(Button2&~Button2){Menu33=Menu33-1}
+    if(Menu33>6){Menu33=6}
+    if(Menu33<1){Menu33=1}
+    if(Menu33==1){S:egpText(237,"Props",vec2(170,220)) 
+        DroneTargClass=1}
+    if(Menu33==2){S:egpText(237,"Wire",vec2(170,220)) 
+        DroneTargClass=2}
+    if(Menu33==3){S:egpText(237,"Seat",vec2(170,220)) 
+        DroneTargClass=3}
+    if(Menu33==4){S:egpText(237,"Gyro",vec2(170,220)) 
+        DroneTargClass=4}
+    if(Menu33==5){S:egpText(237,"Sents",vec2(170,220)) 
+        DroneTargClass=5}
+    if(Menu33==6){S:egpText(237,"PewPew",vec2(170,220)) 
+        DroneTargClass=6}
+}
+
+if(Mainmenu3&SubMenu1==5&Submenu1lock){
+    if(Button1&~Button1){Menu34=Menu34+1}
+    if(Button2&~Button2){Menu34=Menu34-1}
+    if(Menu34<0){Menu34=0}
+    S:egpText(137,toString(Menu34),vec2(170,258))
+}
+
+###################################
+
+if(Mainmenu4&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){Menu41=Menu41+1}
+    if(Button2&~Button2){Menu41=Menu41-1}
+    if(Menu41>3){Menu41=3}
+    if(Menu41<1){Menu41=1}
+    if(Menu41==1){S:egpText(130,"Mode 1",vec2(240,135))
+        S:egpText(129,"Mode 1",vec2(170,135))
+        S:egpText(127,"Mode 1",vec2(30,135))
+        S:egpText(128,"Mode 1",vec2(100,135))
+        CannonFireMode=1
+        SecondaryFireMode=1
+        DroneFireMode=1}
+    if(Menu41==2){S:egpText(130,"Mode 2",vec2(240,135))
+        S:egpText(129,"Mode 2",vec2(170,135))
+        S:egpText(127,"Mode 2",vec2(30,135))
+        S:egpText(128,"Mode 2",vec2(100,135))
+        CannonFireMode=2
+        SecondaryFireMode=2
+        DroneFireMode=2}
+    if(Menu41==3){S:egpText(130,"Mode 3",vec2(240,135))
+        S:egpText(129,"Mode 3",vec2(170,135))
+        S:egpText(127,"Mode 3",vec2(30,135))
+        S:egpText(128,"Mode 3",vec2(100,135))
+        CannonFireMode=3
+        SecondaryFireMode=3
+        DroneFireMode=3}
+        
+        Menu11=Menu41
+        Menu21=Menu41
+        Menu31=Menu41
+}
+
+
+
+if(Mainmenu4&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){Menu42=Menu42+1}
+    if(Button2&~Button2){Menu42=Menu42-1}
+    if(Menu42>4){Menu42=4}
+    if(Menu42<0){Menu42=0}
+    if(Menu42==0){S:egpText(134,"Mode 0",vec2(240,185))
+        S:egpText(133,"Mode 0",vec2(170,185))
+        S:egpText(131,"Mode 0",vec2(30,185))
+        S:egpText(132,"Mode 0",vec2(100,185))
+        CannonTargMode=0
+        SecondaryTargMode=0
+        DroneTargMode=0}
+    if(Menu42==1){S:egpText(134,"Mode 1",vec2(240,185))
+        S:egpText(133,"Mode 1",vec2(170,185))
+        S:egpText(131,"Mode 1",vec2(30,185))
+        S:egpText(132,"Mode 1",vec2(100,185))
+        CannonTargMode=1
+        SecondaryTargMode=1
+        DroneTargMode=1}
+    if(Menu42==2){S:egpText(134,"Mode 2",vec2(240,185))
+        S:egpText(133,"Mode 2",vec2(170,185))
+        S:egpText(131,"Mode 2",vec2(30,185))
+        S:egpText(132,"Mode 2",vec2(100,185))
+        CannonTargMode=2
+        SecondaryTargMode=2
+        DroneTargMode=2}
+    if(Menu42==3){S:egpText(134,"Mode 3",vec2(240,185))
+        S:egpText(133,"Mode 3",vec2(170,185))
+        S:egpText(131,"Mode 3",vec2(30,185))
+        S:egpText(132,"Mode 3",vec2(100,185))
+        CannonTargMode=3
+        SecondaryTargMode=3
+        DroneTargMode=3}
+        
+    if(Menu42==4){S:egpText(134,"Mode 4",vec2(240,185))
+        S:egpText(133,"Mode 4",vec2(170,185))
+        S:egpText(131,"Mode 4",vec2(30,185))
+        S:egpText(132,"Mode 4",vec2(100,185))
+        CannonTargMode=4
+        SecondaryTargMode=4
+        DroneTargMode=4}
+        
+        Menu12=Menu42
+        Menu22=Menu42
+        Menu32=Menu42
+    }
+    
+if(Mainmenu4&SubMenu1==4&Submenu1lock){
+    if(Button1&~Button1){Menu43=Menu43+1}
+    if(Button2&~Button2){Menu43=Menu43-1}
+    if(Menu43>6){Menu43=6}
+    if(Menu43<1){Menu43=1}
+    if(Menu43==1){
+        S:egpText(235,"Props",vec2(30,220)) 
+        S:egpText(236,"Props",vec2(100,220)) 
+        S:egpText(237,"Props",vec2(170,220)) 
+        S:egpText(238,"Props",vec2(240,220)) 
+        CannonTargClass=1
+        SecondaryTargClass=1
+        DroneTargClass=1}
+    if(Menu43==2){
+        S:egpText(235,"Wire",vec2(30,220)) 
+        S:egpText(236,"Wire",vec2(100,220)) 
+        S:egpText(237,"Wire",vec2(170,220)) 
+        S:egpText(238,"Wire",vec2(240,220)) 
+        CannonTargClass=2
+        SecondaryTargClass=2
+        DroneTargClass=2}
+    if(Menu43==3){
+        S:egpText(235,"Seat",vec2(30,220)) 
+        S:egpText(236,"Seat",vec2(100,220)) 
+        S:egpText(237,"Seat",vec2(170,220)) 
+        S:egpText(238,"Seat",vec2(240,220)) 
+        CannonTargClass=3
+        SecondaryTargClass=3
+        DroneTargClass=3}
+    if(Menu43==4){
+        S:egpText(235,"Gyro",vec2(30,220)) 
+        S:egpText(236,"Gyro",vec2(100,220)) 
+        S:egpText(237,"Gyro",vec2(170,220)) 
+        S:egpText(238,"Gyro",vec2(240,220)) 
+        CannonTargClass=4
+        SecondaryTargClass=4
+        DroneTargClass=4}
+    if(Menu43==5){
+        S:egpText(235,"Sents",vec2(30,220)) 
+        S:egpText(236,"Sents",vec2(100,220)) 
+        S:egpText(237,"Sents",vec2(170,220)) 
+        S:egpText(238,"Sents",vec2(240,220)) 
+        CannonTargClass=5
+        SecondaryTargClass=5
+        DroneTargClass=5}
+    if(Menu43==6){
+        S:egpText(235,"PewPew",vec2(30,220)) 
+        S:egpText(236,"PewPew",vec2(100,220)) 
+        S:egpText(237,"PewPew",vec2(170,220)) 
+        S:egpText(238,"PewPew",vec2(240,220)) 
+        CannonTargClass=6
+        SecondaryTargClass=6
+        DroneTargClass=6}
+        
+        Menu13=Menu43
+        Menu23=Menu43
+        Menu33=Menu43
+}
+    
+if(Mainmenu5&SubMenu1==1&Submenu1lock){
+    if(Button1&~Button1){Menu51=Menu51+1}
+    if(Button2&~Button2){Menu51=Menu51-1}
+    if(Menu51>2){Menu51=2}
+    if(Menu51<1){Menu51=1}
+    if(Menu51==1){S:egpText(162,"1st Pers",vec2(315,100)) Camera=1}
+    if(Menu51==2){S:egpText(162,"3nd Pers",vec2(315,100)) Camera=3}
+
+}
+
+if(Mainmenu5&SubMenu1==2&Submenu1lock){
+    if(Button1&~Button1){Menu52=Menu52+1}
+    if(Button2&~Button2){Menu52=Menu52-1}
+    if(Menu52>2){Menu52=2}
+    if(Menu52<1){Menu52=1}
+    if(Menu52==1){S:egpText(165,"Auto Plt",vec2(315,150)) DroneCtrl=1}
+    if(Menu52==2){S:egpText(165,"Manual",vec2(315,150)) DroneCtrl=2}
+
+}
+
+if(Mainmenu5&SubMenu1==3&Submenu1lock){
+    if(Button1&~Button1){Menu53=Menu53+1}
+    if(Button2&~Button2){Menu53=Menu53-1}
+    if(Menu53>3){Menu53=3}
+    if(Menu53<1){Menu53=1}
+    if(Menu53==1){S:egpText(167,"Docked",vec2(315,185)) DroneMode=1}
+    if(Menu53==2){S:egpText(167,"Shaddow",vec2(315,185)) DroneMode=2}
+    if(Menu53==3){S:egpText(167,"Roam",vec2(315,185)) DroneMode=3}
+}
+
+}
+
+
+T=T+1
+if(T==20){T=0
+#findExcludePlayer("DIRT")
+    PlayersCount = findByClass("Player")
+   MaxIndex=numPlayers()#-1
+    S:egpText(MaxIndex+1,"",vec2(0,0))
+}
+Players=findToArray()
+X=240
+I=I+1
+if(I>MaxIndex){I=1}
+#for(I=0,MaxIndex){
+    S:egp3DTracker(I+X,Players[I,entity]:pos())
+    S:egpText(I+(X+10),Players[I,entity]:name(),S:egpPos(I+X))
+    S:egpParent(I+(X+10),I+X)    
+    S:egpText(MaxIndex+(X+11),"",vec2(0,0))
+    
+#}
+
+#if(I|first()|duped()|changed(numPlayers())|Button1|Button2){
+   # findClearBlackList()
+
+#if(Players:entity(I+4000)){S:egpText(3,Players[I,entity]:name(),vec2(30,255+(I*15)))}
+#else{S:egpText(I+4000,Players[I,entity]:name(),vec2(30,255+(I*15)))}
+
+S:egpText(I+700,Players[I,entity]:name(),vec2(30,275+(I*15)))
+
+#S:egpParent(I+701,I)
+
+#if(Targeting){
+##if(Button1&~Button1){TargCount=TargCount+1}
+##if(Button2&~Button2){TargCount=TargCount-1}
+##if(TargCount<0){TargCount=0}
+##if(TargCount>MaxIndex){TargCount=MaxIndex}
+##if(Button1&~Button1|Button2&~Button2){
+#3Target=Players:entity(TargCount)
+#3}
+      ##  HintName = Target:name()
+       ## if(Target&(Button1&~Button1|Button2&~Button2)){
+       ## hint("Targeting " + HintName,8)
+        ##}elseif(Button1&~Button1|Button2&~Button2){
+       ## hint("No Targer",8)
+    #   S:egpText(2,"No Target",vec2(30,270))
+   # S:egpText(1,"->",vec2(10,(TargCount*15)+240))
+
+
+    
+
+ 
+
+
+#}

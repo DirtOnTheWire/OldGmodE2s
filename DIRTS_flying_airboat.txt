@@ -1,0 +1,42 @@
+@name DIRTS flying airboat
+
+interval(1)
+E = entity():isWeldedTo() 
+
+if(first()|duped()){E:setMaterial("models/props_combine/portalball001_sheet")
+entity():setAlpha(0)
+E:setTrails(50,5,5,"trails/smoke",vec(0,255,200),255)
+}
+
+
+UFOflying=0
+
+ 
+  
+if(owner():keyJump()&owner():inVehicle()){E:applyForce(E:up()*500000)}
+if(owner():keySprint()&owner():inVehicle()){E:applyForce(E:up()*-500000)}
+
+
+
+if(UFOflying==0){
+E:applyForce((vec(0,0,0)-(E:vel()*0.45))*E:mass())
+
+if(owner():keyForward()&owner():inVehicle()){E:applyForce(E:forward()*500000)}
+if(owner():keyBack()&owner():inVehicle()){E:applyForce(E:forward()*-500000)}
+}
+
+
+if(UFOflying==1){
+    Ownereye=(owner():eye()*1000000000)
+
+if(owner():keyForward()&owner():inVehicle()) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+    Pos= Ownereye}
+if(owner():keyBack()&owner():inVehicle()) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav")
+    Pos= -Ownereye}
+
+if (!E:isPlayerHolding()) {    
+E:applyForce((Pos-entity():vel())*entity():mass())
+E:applyForce((vec(0,0,0)-(E:vel()*0.45))*E:mass())
+}
+}
+

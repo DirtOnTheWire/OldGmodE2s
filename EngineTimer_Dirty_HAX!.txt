@@ -1,0 +1,132 @@
+@name EngineTimer Dirty HAX!
+@inputs P:wirelink [Case Shaft T1 T2 T3 T4]:entity 
+@outputs Yaw Ang RPM THP Clutch
+@persist Force A B Thr Pitch IdlePitch Idle Sound:string StartIdle AfterStartIdle RPM EngineType THP Pos:vector I ThrClamp CrankDampening T Realrev Rev
+runOnTick(1)
+#interval(50)
+
+if(first()|dupefinished()){
+    Force=10000
+    Idle=0
+    Pos=vec(0,0,0)
+    ThrClamp=2000
+    CrankDampening=1.0
+    Sound="thrusters/jet03.wav"
+    Pitch=5
+    IdlePitch=5.6
+    
+    DEBUG=0
+    
+    # Each has different timing
+    # 1 = T1 T4 : T2 T3
+    # 2 = T1 : T2 : T3 : T4
+    # 3 = T1 : T4 : T3 : T2 Use if you did it backwards
+    EngineType=2
+    
+    if(DEBUG){
+        I++
+        holoCreate(I,Case:toWorld(Pos))
+        holoParent(I,Case)
+        if(T1){
+        I++
+        holoCreate(I,T1:pos()+T1:up()*5,vec(2.5,0.5,0.5))
+        holoParent(I,T1)
+        }
+        if(T2){
+        I++
+        holoCreate(I,T2:pos()+T2:up()*5,vec(2.5,0.5,0.5))
+        holoParent(I,T2)
+        }
+        if(T3){
+        I++
+        holoCreate(I,T3:pos()+T3:up()*5,vec(2.5,0.5,0.5))
+        holoParent(I,T3)
+        }
+        if(T4){
+        I++
+        holoCreate(I,T4:pos()+T4:up()*5,vec(2.5,0.5,0.5))
+        holoParent(I,T4)
+        }
+    }
+}
+
+
+Ac=P["Active",normal]
+if(Ac){
+    W=P["W",normal]
+    S=P["S",normal]
+    Shift=P["Shift",normal]
+    Throttle=clamp((W*500)+(S*500),0,500)
+}
+
+if(Shift){Clutch=0}
+else{Clutch=1}
+    if(!W&!S){
+    Shaft:applyAngForce(Shaft:angVel()*-CrankDampening)
+    }
+    
+if(changed(Ac)){
+    if(Ac){
+        Shaft:soundPlay("eng",0,Sound)
+    }
+    else{
+        soundStop("eng")
+    }
+}
+
+
+THP+=(Throttle-THP)/12
+THP=clamp(THP,0,ThrClamp)
+    if(!W&!S){
+THP=0
+    }
+
+Thr=clamp(THP,Idle,ThrClamp)/100
+if(S){Reverse=-1}
+else{Reverse=1}
+
+A=(Ac*Thr*Force)*Reverse*-1
+#B=-A
+B=(Ac*Thr*Force)*Reverse*1
+# Edit the placement of this to fix any other timing issues
+Ang=Shaft:bearing(Case:toWorld(Pos))
+
+if(EngineType==1){
+    if(inrange(Ang,-180,0)){T1:applyForce(T1:up()*B)}else{T1:applyForce(T1:up()*A)}
+    if(inrange(Ang,-180,0)){T2:applyForce(T2:up()*B)}else{T2:applyForce(T2:up()*A)}
+    
+    if(inrange(Ang,-180,0)){T3:applyForce(T3:up()*B)}else{T3:applyForce(T3:up()*A)}
+    if(inrange(Ang,-180,0)){T4:applyForce(T4:up()*B)}else{T4:applyForce(T4:up()*A)}
+}
+
+if(EngineType==2){
+    if(Ang>=90|Ang<=-90){T1:applyForce(T1:up()*A)}else{T1:applyForce(T1:up()*B)}
+    if(Ang>=90|Ang<=-90){T2:applyForce(T2:up()*A)}else{T2:applyForce(T2:up()*B)}
+    
+    if(inrange(Ang,-180,0)){T3:applyForce(T3:up()*B)}else{T3:applyForce(T3:up()*A)}
+    if(inrange(Ang,-180,0)){T4:applyForce(T4:up()*B)}else{T4:applyForce(T4:up()*A)}
+}
+elseif(EngineType==3){
+    if(Ang>=-180&Ang<=0){T1:applyForce(T1:up()*A)}else{T1:applyForce(T1:up()*B)}
+    if(Ang>=-90&Ang<=90){T2:applyForce(T2:up()*A)}else{T2:applyForce(T2:up()*B)}
+    if(Ang>=0&Ang<=180){T3:applyForce(T3:up()*B)}else{T3:applyForce(T3:up()*A)}
+    if(Ang>=90|Ang<=-90){T4:applyForce(T4:up()*B)}else{T4:applyForce(T4:up()*A)}
+}
+elseif(EngineType==4){
+    if(Ang>=-90&Ang<=90){T1:applyForce(T1:up()*A)}else{T1:applyForce(T1:up()*B)}
+    if(Ang>=-180&Ang<=0){T2:applyForce(T2:up()*A)}else{T2:applyForce(T2:up()*B)}
+    if(Ang<=-90|Ang>=90){T3:applyForce(T3:up()*B)}else{T3:applyForce(T3:up()*A)}
+    if(Ang>=0&Ang<=180){T4:applyForce(T4:up()*B)}else{T4:applyForce(T4:up()*A)}
+}
+
+if(!Ac){T=10 Rev=1 Realrev=0}
+if(T>9000){Rev=0}
+if(Rev){T=clamp(T+T/50,0,10000) RPM=T/20}
+if(!Rev){T=clamp(T-T*0.005,0,10000) RPM=T/20}
+
+if(!Rev&RPM<abs(Shaft:angVel():yaw()/360*60)){Realrev=1}
+
+if(Realrev){RPM=abs(Shaft:angVel():yaw()/360*60)}
+
+if(Ac){soundPitch("eng",((RPM/30)+IdlePitch)*Pitch)}
+

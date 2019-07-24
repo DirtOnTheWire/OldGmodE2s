@@ -1,0 +1,43 @@
+@name prop surfer
+@inputs 
+@persist Target:entity T Name:string LastSaid:array
+@outputs 
+@model models/hunter/plates/plate2x2.mdl
+
+#interval(1)
+runOnTick(1)
+#runOnChat(1)
+if(first()|duped()){Warp=0 entity():setMass(10)}
+  E = entity()
+
+
+#LastSaid=owner():lastSaid():explode(" ")
+#if(chatClk(owner())&LastSaid[1,string]=="t")
+#        {Name = LastSaid[2,string]
+#        Target=findPlayerByName(Name)
+#        HintName = Target:name(),hideChat(1)}
+#        if(Target&chatClk(owner())){
+#        hint("Targeting " + HintName,8)
+#        }elseif(chatClk(owner())){
+ #       hint("No Target Found with " + Name,8)
+ #       }
+
+Target=owner()
+T=(T+0.01)
+
+if (owner():keyJump()) {Up=20}
+if (owner():keyDuck()) {Up=-20}
+
+
+V=clamp(((Target:pos()+(vec(Target:vel():x(),Target:vel():y(),0)*0.0) - E:pos()+vec(0,0,2+Up))*600),-10000,10000)
+
+
+E:applyForce(V)
+
+
+
+
+Angle=-E:angles()*55-E:angVel()*2
+E:applyForce((vec(0,0,0)-(E:vel()*0.60))*E:mass())
+Leverage=E:inertia():length()
+E:applyAngForce(Angle*Leverage*ang(2,4,2))

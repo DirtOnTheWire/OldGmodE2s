@@ -1,0 +1,36 @@
+@name On Death Do This plus by Rykun
+@inputs 
+@outputs Ops
+@persist Alive RunCheck PropCount StackCount
+
+interval(100)
+
+Ops = ops()
+
+Alive = owner():isAlive()
+Owner = owner():pos()+vec(0,0,50)
+SC = StackCount
+
+if (changed(Alive) & !Alive & RunCheck==0) {
+    while(PropCount<25){
+        Prop="models/props_junk/wood_crate002a.mdl"
+        propSpawn(Prop,Owner+vec(random(-50,50),random(-50,50),SC),0):propBreak()
+        SC=SC+10
+        PropCount++ }
+    RunCheck=1 }
+elseif (changed(Alive) & Alive & RunCheck==1) { 
+    RunCheck=0
+    PropCount=0
+    SC=0 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,78 @@
+@name police lights
+@inputs On Light1:wirelink Light2:wirelink
+@persist E:entity Speed E1:entity E2:entity HoloEnt:entity T I Latch
+@outputs 
+
+#MADE BY DIRT
+
+interval(50)
+runOnChat(1)
+
+if (first()|duped()|dupefinished()){
+E = entity()
+Pos=E:pos()
+E1=Light1:entity()
+E2=Light2:entity()
+holoCreate(1)
+holoAlpha(1,0)
+holoParent(1,E)
+HoloEnt=holoEntity(1)
+
+    E1:deparent()
+    E2:deparent()
+    
+E1:propFreeze(1)
+E2:propFreeze(1)
+
+E1:setPos(E:toWorld(E:toLocal(Pos)+vec(10,0,0)))
+E2:setPos(E:toWorld(E:toLocal(Pos)+vec(-10,0,0)))
+E1:setAng(E:toWorld(ang(0,0,0)))
+E2:setAng(E:toWorld(ang(0,180,0)))
+
+Light1:setNumber("On",0)
+Light2:setNumber("On",0)
+
+Light1:setVector("RGB",vec(255,0,0))
+Light2:setVector("RGB",vec(0,0,255))
+Light1:setNumber("Brightnes",255)
+Light2:setNumber("Brightnes",255)
+Light1:setNumber("Distance",3000)
+Light2:setNumber("Distance",3000)
+Light1:setNumber("FOV",170)
+Light2:setNumber("FOV",170)
+
+}
+I++
+if (I==5){
+E1:parentTo(HoloEnt)
+E2:parentTo(HoloEnt)
+}
+if (I<=10){
+    T=0
+}
+
+if(On&~On){ Latch=!Latch}
+if(Latch){
+T=T+30
+Light1:setNumber("On",1)
+Light2:setNumber("On",1)
+holoAng(1,E:toWorld(ang(0,T,0)))
+Latch=1
+}
+
+
+if(!Latch)
+{
+Light1:setNumber("On",0)
+Light2:setNumber("On",0)
+Latch=0
+}
+
+LastSaid=owner():lastSaid():explode(" ")
+if(chatClk(owner())&LastSaid[1,string]=="!reset")
+        {reset()}
+if (last()) {
+    E1:deparent()
+    E2:deparent()
+}
+

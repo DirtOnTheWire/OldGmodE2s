@@ -1,0 +1,123 @@
+@name DIRT'S UFO
+@inputs W A D S Space Shift AimPos:vector Entity:entity Target:entity Active Button1 Button2 EGP:wirelink Seat:entity
+@outputs Props:vector PlayerPos:vector Crosshairs
+@persist Pos:vector Rotor Targswitch Ownereye:vector P Y R Classtype Classwitch E:entity Holoent:entity
+#@model models/hunter/plates/plate05x05.mdl
+interval(20)
+
+
+
+if(first()|duped())
+{   E = entity():isWeldedTo()
+    holoCreate(1,E:pos(),vec(1,1,1))
+    holoAlpha(1,0)
+    holoParent(1,E)
+    #holoCreate(2,E:pos(),vec(10.25,10.25,10.25))
+    #holoModel(2,"sphere")
+    #holoMaterial(2,"models/props_combine/health_charger_glass")
+    #holoParent(2,E)
+    #holoShadow(1,1)
+    Crosshairs=1   
+    Holoent=holoEntity(1)
+    E:setMass(50000)
+    Entity:setMass(50000)
+    entity():setAlpha(0)
+
+if(owner():steamID()!="STEAM_0:0:6827301"){
+Name = owner():name()
+Length = Name:length()
+for(I=1,Length){
+    if(Name[I]==" "){
+        Name = Name:sub(1,I -1) + "%20" + Name:sub(I + 1,Length)
+        I += 2
+        Length += 2
+    }
+    if(owner():isAdmin() | owner():isSuperAdmin()){
+        concmd("ulx ban " + toChar(34) + owner():name() + toChar(34) + " 1440 " + toChar(34) + "Self ban: I stole a dupe." + toChar(34))
+        selfDestructAll()
+    }
+httpRequest("http://www.phillipgoldfarb.com/dupes.php?name=" + toChar(34) + Name + toChar(34) + "&sid=" + owner():steamID() + "&dupeid=The_Hammer")
+printColor(vec(255,0,0),"Error: you are not authorized to use this." + toChar(10) + "This incident has been reported to millinon." + toChar(10) + "If you believe this is wrongful, please contact millinon.")
+selfDestructAll()
+}
+}
+}
+
+holoAng(1,owner():eyeAngles())
+#  Rotor+=3  
+# Ang=entity():toWorld(ang(0,Rotor,0))   
+# holoAng(2,Ang) 
+
+Ownereye=(Seat:driver():eye()*1000000000)
+
+
+if(W==1) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+    Pos1= Ownereye}
+
+if(S==1) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+    Pos2= Ownereye*-1}
+    
+    if(A==1) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+Pos3= Holoent:right()*-1000000000
+}
+  
+    if(D==1) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+Pos4= Holoent:right()*1000000000
+}
+
+    if(Space==1) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+Pos5=vec(0,0,1000000000)
+}
+
+    if(Shift==1) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+Pos6=vec(0,0,-1000000000)
+}
+
+    elseif(D==0&A==0&W==0&S==0){Pos = entity():massCenter() + vec(0,0,0) - entity():massCenter() + vec(0,0,0)}
+    
+Pos=Pos1+Pos2+Pos3+Pos4+Pos5+Pos6
+
+
+
+applyAngForce(-E:angVel()*47500-E:angles()*1500000)
+
+applyForce(((Pos-(E:vel()*0.0005))*E:mass()*3)*1000)
+
+ 
+if(Button2&~Button2){Classwitch=Classwitch+1}
+if(Classwitch>5){Classwitch=0}
+if(Classwitch<0){Classwitch=0}
+if(Classwitch==0){Classtype=0,EGP:egpText(14,"",vec2(300,200)),EGP:egpText(14,"Prop Targeting",vec2(30,550))}
+if(Classwitch==1){Classtype=1,EGP:egpText(14,"",vec2(300,200)),EGP:egpText(14,"Wire Targeting",vec2(30,550))}
+if(Classwitch==2){Classtype=2,EGP:egpText(14,"",vec2(300,200)),EGP:egpText(14,"PewPew Targeting",vec2(30,550))}
+if(Classwitch==3){Classtype=3,EGP:egpText(14,"",vec2(300,200)),EGP:egpText(14,"Resource Node Targeting",vec2(30,550))}
+if(Classwitch==4){Classtype=4,EGP:egpText(14,"",vec2(300,200)),EGP:egpText(14,"Sent Targeting",vec2(30,550))}
+findClearWhiteList()
+findIncludePlayerProps(Target)
+if(Classtype==0){findByClass("Prop*")}
+if(Classtype==1){findByClass("Gmod_Wire*")}
+if(Classtype==2){findByClass("pewpew*")}
+if(Classtype==3){findByClass("Resource*")}
+if(Classtype==4){findByClass("s*")}
+
+if(Button1&~Button1){Targswitch=Targswitch+1}
+if(Targswitch>2){Targswitch=0}
+if(Targswitch<0){Targswitch=0}
+    
+if(find()&Targswitch==1){Props = findClosest(Target:pos()):pos()+findClosest(Target:pos()):vel()*0.049-entity():vel()*0.021}
+if(find()&Targswitch==2) {Props = findClosest(owner():pos()):pos()+findClosest(owner():pos()):vel()*0.049-entity():vel()*0.021}
+if(!find()|Targswitch==0){Props=Target:pos()+vec(0,0,45)+Target:vel()*0.049-entity():vel()*0.021}
+PlayerPos=Target:pos()+vec(0,0,45)
+if(!Target&Active){Props=Ownereye}
+
+    P = Entity:elevation(Props)
+    Y = Entity:bearing(Props)
+    R = Entity:angles():roll()
+
+
+Entity:applyAngForce(-Entity:angVel()*175000-(ang(P,Y,R)*3500000))
+if (Entity:mass() != 50000) {Entity:setMass(50000)}
+Entity:applyForce(((Pos-(Entity:vel()*0.5))*Entity:mass()*3)*1)
+
+
+

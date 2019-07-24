@@ -1,0 +1,16 @@
+@name Get Entity IDs
+
+# How to use:
+# Place the E2 chip, then right-click on any entity
+# to get it's ID, class, unique name and owner.
+# ATTENTION: This uses a custom function (getEntityName)
+
+runOnTick(1)
+
+M2 = owner():keyAttack2()
+if(changed(M2) & M2) {
+print("ID: " + owner():aimEntity():id())
+print("Class: " + owner():aimEntity():type())
+print("Name: " + owner():aimEntity():getName())
+# print("Owner: " + owner():aimEntity():owner()) # not reliable
+}

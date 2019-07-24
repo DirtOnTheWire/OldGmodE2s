@@ -1,0 +1,166 @@
+@name Orange original
+@inputs 
+@outputs 
+@persist Timer Kill UD Tim Rotor RotorTim
+@model models/hunter/misc/sphere075x075.mdl
+@trigger 
+#original made by Mogilzorz
+if(dupefinished()) {reset()}
+
+if(first())
+{
+    
+    entity():setMaterial("models/xqm/rails/gumball_1")
+    entity():setColor(vec(255,136,4))
+ holoCreate(1)   
+ holoCreate(2)
+  holoPos(1,entity():pos()+(entity():up()*16)+(entity():right()*-4)+(entity():forward()*-10))  
+    holoPos(2,entity():pos()+(entity():up()*16)+(entity():right()*4)+(entity():forward()*-10))  
+ 
+  holoScale(1,vec(0.25,0.4,0.4))  
+  holoScale(2,vec(0.25,0.4,0.4))    
+    
+  holoModel(1,"hqsphere")  
+    holoModel(2,"hqsphere")    
+    
+  holoColor(1,vec(30,30,30))  
+   holoColor(2,vec(30,30,30)) 
+ 
+ holoParent(1,entity())   
+  holoParent(2,entity())      
+ 
+ holoCreate(3)   
+ holoCreate(4)
+  holoPos(3,entity():pos()+(entity():up()*13)+(entity():right()*-4)+(entity():forward()*-6))  
+  holoPos(4,entity():pos()+(entity():up()*13)+(entity():right()*4)+(entity():forward()*-6))  
+
+
+
+  holoScale(3,vec(1,1,1))  
+  holoScale(4,vec(1,1,1))    
+
+ holoModel(3,"hqsphere")  
+    holoModel(4,"hqsphere")    
+
+ holoParent(3,entity())   
+  holoParent(4,entity())   
+  
+
+#roflcopter mode
+holoCreate(5)
+holoPos(5,entity():pos()+entity():up()*30)
+holoScale(5,vec(0.4,0.4,2.5))
+holoParent(5,entity())
+
+holoCreate(6)
+holoPos(6,entity():pos()+entity():up()*43)
+holoScale(6,vec(0.65,0.07,6))
+holoAng(6,ang(0,0,90))
+holoParent(6,5)
+
+holoCreate(7)
+holoPos(7,entity():pos()+entity():up()*43)
+holoScale(7,vec(0.65,0.07,6))
+holoAng(7,ang(0,90,90))
+holoParent(7,5)
+
+holoColor(5,vec(30,30,30))
+holoColor(6,vec(30,30,30))
+holoColor(7,vec(30,30,30))
+
+holoAng(6,entity():toWorld(ang(0,90,90)))
+holoAng(7,entity():toWorld(ang(0,0,90)))
+
+}
+runOnTick(1)
+#targetfinding
+findByClass("player")
+T=findClosest(entity():pos())
+Dist=entity():pos():distance(T:shootPos())
+
+#where it should look
+Ang=((T:shootPos()-vec(0,10,0))-holoEntity(1):pos()):toAngle()
+
+if(Dist < 230 & T:pos():z() < entity():pos():z()+70  ) {
+Entity = entity()
+Angle = Ang+ang(0,180,UD)
+Torque = Entity:toLocal(rotationVector(quat(Angle) / quat(Entity)) + Entity:pos())
+Entity:applyTorque((Torque*1000-Entity:angVelVector()*20)*Entity:inertia())
+
+}
+
+Rand=randint(1,100)
+Pos=T:pos()
+if(Rand > 98) {Mul=1}else{Mul=0}
+
+soundPitch(1,170)
+ 
+if(T:aimEntity()==entity()  & T:keyAttack1())
+{Timer+=1} else{Timer=0}
+soundPitch(3,150)
+if(Timer==2) {soundPlay(3,0,"vo/npc/male01/no02.wav")}
+
+if(Dist < 2000 & Rand > 50 & T:aimEntity() != entity()) {applyForce(((Pos-entity():pos()):normalized()*237))   }
+#climbing
+if(Dist < 2000) {Random=randint(1,24) Tim+=1 } else{Tim=0}
+if(Tim>120) {Tim=0}
+
+if(Random==1) {Str="vo/npc/male01/gordead_ques03a.wav"}
+if(Random==2) {Str="vo/npc/male01/whoops01.wav"}
+if(Random==3) {Str="vo/npc/male01/gordead_ans18.wav"}
+if(Random==4) {Str="vo/npc/male01/hellodrfm01.wav"}
+if(Random==5) {Str="vo/npc/male01/heydoc01.wav"}
+if(Random==6) {Str="vo/npc/male01/holddownspot01.wav"}
+if(Random==7) {Str="vo/npc/male01/answer08.wav"}
+if(Random==8) {Str="vo/npc/male01/answer09.wav"}
+if(Random==9) {Str="vo/npc/male01/answer16.wav"}
+if(Random==10) {Str="vo/npc/male01/answer29.wav"}
+if(Random==11) {Str="vo/npc/male01/notthemanithought01.wav"}
+if(Random==12) {Str="vo/npc/male01/overhere01.wav"}
+if(Random==13) {Str="vo/npc/male01/question02.wav"}
+if(Random==14) {Str="vo/npc/male01/question05.wav"}
+if(Random==15) {Str="vo/npc/male01/question06.wav"}
+if(Random==16) {Str="vo/npc/male01/question14.wav"}
+if(Random==17) {Str="vo/npc/male01/waitingsomebody.wav"}
+if(Random==18) {Str="vo/npc/barney/ba_laugh02.wav"}
+if(Random==19) {Str="vo/npc/barney/ba_oldtimes.wav"}
+if(Random==20) {Str="vo/npc/barney/ba_laugh04.wav"}
+if(Random==21) {Str="vo/npc/male01/question30.wav"}
+if(Random==22) {Str="vo/npc/barney/ba_laugh04.wav"}
+if(Random==23) {Str="vo/npc/male01/question27.wav"}
+if(Random==24) {Str="vo/npc/male01/answer17.wav"}
+
+if(Tim==10)
+{soundPlay(1,0,Str)}
+
+#roflcopter mode
+
+if(Dist > 1000 | T:pos():z() > entity():pos():z()+50 )
+{
+ holoAlpha(5,255) holoAlpha(6,255) holoAlpha(7,255)   
+  Rotor+=30  
+ Angle=entity():toWorld(ang(0,Rotor,0))   
+ holoAng(5,Angle)   
+
+
+Entity = entity()
+Angle = Ang+ang(25,180,0)
+Torque = Entity:toLocal(rotationVector(quat(Angle) / quat(Entity)) + Entity:pos())
+Entity:applyTorque((Torque*1000-Entity:angVelVector()*20)*Entity:inertia())
+
+
+
+
+
+
+applyForce((((Pos+vec(0,0,2500))-entity():pos()):normalized()*437))    
+    
+ RotorTim+=1   
+    
+    if(RotorTim>100) {RotorTim=0}
+    if(RotorTim==1) {
+soundPlay(2,0,"vehicles/chopper_rotor2.wav")        
+soundPitch(2,280)        
+        }
+    
+} else{holoAlpha(5,0) holoAlpha(6,0) holoAlpha(7,0) RotorTim=0 soundStop(2)}

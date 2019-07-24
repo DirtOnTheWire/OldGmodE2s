@@ -1,0 +1,96 @@
+@name DIRTS war of the servers airboat
+
+@persist E:entity P2HI P2HOI P2HC P2HScale P2HBase:entity P2HTable:table Hover Trim
+
+
+interval(1)
+
+
+if(first()|duped()){
+
+entity():setAlpha(0)
+E = entity():isWeldedTo() 
+
+#E:setMaterial("models/props_combine/portalball001_sheet")
+#E:setTrails(50,5,5,"trails/smoke",vec(0,255,200),255)
+
+
+P2HC = 7
+P2HTI = 0
+P2HOI = 0
+P2HBase = E #Change to whatever entity you wish
+P2HScale = 1 #Change to whatever scale you'd like your export to be in
+#Model, Material, Skin, Color, Position, and Angle (both position and angle are relative to base)
+P2HTable[1, array] = array("models/props_junk/wood_pallet001a.mdl", "", 0, vec4(255,255,255,255), vec(-68.4131,-6.2773,22.0748), ang(0.6592,-86.0198,-9.9783))
+P2HTable[2, array] = array("models/props_junk/wood_pallet001a.mdl", "", 0, vec4(255,255,255,255), vec(68.9016,-6.3123,22.1609), ang(0.6592,-93.9802,9.9783))
+P2HTable[3, array] = array("models/props_junk/cinderblock01a.mdl", "", 0, vec4(255,255,255,255), vec(46.322,19.1301,7.5278), ang(1.9997,0.7476,90.0301))
+P2HTable[4, array] = array("models/props_junk/cinderblock01a.mdl", "", 0, vec4(255,255,255,255), vec(-46.322,19.1301,7.5278), ang(1.9997,179.2524,-90.0302))
+P2HTable[5, array] = array("models/props_docks/dock01_pole01a_128.mdl", "", 0, vec4(255,255,255,255), vec(0.007,-136.2202,79.3744), ang(90,-90,0))
+P2HTable[6, array] = array("models/props_debris/metal_panel02a.mdl", "", 0, vec4(255,255,255,255), vec(-36.108,-173.6499,96.5934), ang(-64.9478,-0.0077,-180))
+P2HTable[7, array] = array("models/props_debris/metal_panel02a.mdl", "", 0, vec4(255,255,255,255), vec(35.241,-173.75,98.0164), ang(-60.3035,179.9356,180))
+
+#Put this in a place that runs on an interval (i.e interval, runOnTick, timers, etc.)
+if(P2HI < P2HC)
+{
+    while(perf() & holoCanCreate() & P2HI < P2HC)
+    {
+        P2HI++
+        local TA = P2HTable[P2HI, array]
+        local TI = P2HI + P2HOI
+
+        holoCreate(TI, P2HBase:toWorld(TA[5, vector] * P2HScale), vec(P2HScale), P2HBase:toWorld(TA[6, angle] * P2HScale))
+        holoModel(TI, TA[1, string])
+        holoMaterial(TI, TA[2, string])
+        holoSkin(TI, TA[3, number])
+        holoColor(TI, TA[4, vector4])
+        holoParent(TI, P2HBase)
+    }
+}
+
+}
+
+
+UFOflying=0
+
+ 
+Space=0
+Shift=0
+if(owner():keyJump()&owner():inVehicle()){E:applyForce(E:up()*20000) Space=1 Shift=0}
+if(owner():keySprint()&owner():inVehicle()){E:applyForce(E:up()*-20000) Space=0 Shift=1}
+
+
+Hover=(E:vel():z())+1.0
+
+
+#if (Hover>0){Hover=0}
+if(!(Shift|Space)){
+Trim=Trim+100*-Hover
+}
+Trim=clamp(Trim,0,120000)
+
+E:applyForce(vec(0,0,Trim))
+
+
+
+if(UFOflying==0){
+E:applyForce((vec(0,0,0)-(E:vel()*0.1))*E:mass())
+
+if(owner():keyForward()&owner():inVehicle()){E:applyForce(E:forward()*50000)}
+if(owner():keyBack()&owner():inVehicle()){E:applyForce(E:forward()*-50000)}
+}
+
+
+if(UFOflying==1){
+    Ownereye=(owner():eye()*1000000000)
+
+if(owner():keyForward()&owner():inVehicle()) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav") 
+    Pos= Ownereye}
+if(owner():keyBack()&owner():inVehicle()) { soundPlay(1,1,"npc/scanner/cbot_fly_loop.wav")
+    Pos= -Ownereye}
+
+if (!E:isPlayerHolding()) {    
+E:applyForce((Pos-entity():vel())*entity():mass())
+E:applyForce((vec(0,0,0)-(E:vel()*0.01))*E:mass())
+}
+}
+

@@ -1,0 +1,121 @@
+@name hug chip (now with more hugs)
+@inputs 
+@persist T:table [L CurArray]:array Nr
+@outputs
+interval(5000)
+runOnChat(1)
+if(first()|duped()){
+    
+    #SET UP SOUNDS
+    L = array()
+    
+    #1
+    L:pushString("1")
+    R = array()
+    R:pushString("doors/vent_open1.wav")
+    R:pushString("doors/vent_open2.wav")
+    R:pushString("doors/vent_open3.wav")
+    T["1",string] = glonEncode(R)
+    
+    #2
+    L:pushString("2")
+    R = array()
+    R:pushString("npc/manhack/mh_blade_loop1.wav")
+    T["2",string] = glonEncode(R)
+    
+    #3
+    L:pushString("3")
+    R = array()
+    R:pushString("npc/crow/alert2.wav")
+    R:pushString("npc/crow/alert3.wav")
+    T["3",string] = glonEncode(R)
+    
+    #4
+    L:pushString("4")
+    R = array()
+    R:pushString("npc/cow/aoc_cow_moo.wav")
+    R:pushString("ambient/creatures/cow_moan.wav")
+    T["4",string] = glonEncode(R)
+    
+    #5
+    L:pushString("5")
+    R = array()
+    R:pushString("ambient/creatures/seagull_idle1.wav")
+    R:pushString("ambient/creatures/seagull_idle2.wav")
+    R:pushString("ambient/creatures/seagull_idle3.wav")
+    R:pushString("ambient/creatures/seagull_pain1.wav")
+    R:pushString("ambient/creatures/seagull_pain2.wav")
+    T["5",string] = glonEncode(R)
+    
+    #6
+    L:pushString("6")
+    R = array()
+    R:pushString("ambient/creatures/warbler_01.wav")
+    R:pushString("ambient/creatures/warbler_02.wav")
+    R:pushString("ambient/creatures/warbler_03.wav")
+    R:pushString("ambient/creatures/warbler_04.wav")
+    R:pushString("ambient/creatures/warbler_05.wav")
+    R:pushString("ambient/creatures/warbler_06.wav")
+    R:pushString("ambient/creatures/warbler_07.wav")
+    R:pushString("ambient/creatures/warbler_08.wav")
+    R:pushString("ambient/creatures/warbler_09.wav")
+    R:pushString("ambient/creatures/warbler_10.wav")
+    T["6",string] = glonEncode(R)
+    
+    #7
+    L:pushString("7")
+    R = array()
+    R:pushString("ambient/alarms/alarm1.wav")
+    T["7",string] = glonEncode(R)
+    
+    
+    
+        
+    #Starting Variables
+    runOnTick(1), Nr = 1
+    CurArray = glonDecode(T[L[Nr,string],string])
+    hint("Current List: " + L[Nr,string],5)
+    hint("Nr of sounds in list: " + CurArray:count(),3)
+}
+
+M2 = owner():keyAttack2()
+Use = owner():keyReload()
+
+if (changed(M2) & M2) {
+    Nr++
+    if (Nr>L:count()) {Nr = 1}
+    CurArray = glonDecode(T[L[Nr,string],string])
+    hint("Current List: " + L[Nr,string],5)
+    hint("Nr of sounds in list: " + CurArray:count(),3)
+}
+
+LastSaid=owner():lastSaid():explode(" ")
+
+if(chatClk(owner())&LastSaid[1,string]==".t")
+    {Name = LastSaid[2,string],
+    Target=findPlayerByName(Name),
+    HintName = Target:name(),hideChat(1)}
+    if(Target&chatClk(owner())){
+    hint("Targeting " + HintName,8),holoCreate(1,Target:pos()+vec(0,0,0),vec(-12.5,-12.5,-12.5))
+    }elseif(chatClk(owner())){
+    hint("Nobody with the name " + Name,8),holoDelete(1),soundStop(1),soundPurge()
+    }
+        
+if(chatClk(owner())&LastSaid[1,string]==".c")
+    {hideChat(1),hint("Current Target is " + HintName,8)}
+        
+if(chatClk(owner())&LastSaid[1,string]==".s")
+    {soundStop(1),soundPurge(),holoEntity(1):soundPlay(1,0,"npc/crow/alert2.wav"),hideChat(1),hint("Stopping",8)}
+        
+Black=vec(0,0,0)
+    holoModel(1,"sphere")
+    holoParent(1,Target)
+    holoColor(1,Black,0)
+    holoShadow(1,0)
+
+if (changed(Use) & Use) {
+    soundPurge()
+    Rnd = randint(CurArray:count())
+    CurSound = CurArray[Rnd,string]
+    holoEntity(1):soundPlay(1,0,CurSound)
+}

@@ -1,0 +1,102 @@
+@name Combine's Balls 1.1
+@inputs On
+@outputs 
+@persist  Target:entity Ball:entity T Mode
+
+runOnTick(1)
+runOnChat(1)
+if(first()|duped()|dupefinished()){
+T=0
+Mode=2
+}
+
+LastSaid=owner():lastSaid():explode(" ")
+if(chatClk(owner())&LastSaid[1,string]=="t")
+        {Name = LastSaid[2,string]
+        Target=findPlayerByName(Name)
+        HintName = Target:name(),hideChat(1)}
+        if(Target&chatClk(owner())){
+        hint("Targeting " + HintName,8)
+        }elseif(chatClk(owner())){
+        hint("No Target Found with " + Name,8)
+        }
+        
+LastSaid=owner():lastSaid():explode(" ")
+if(chatClk(owner())&LastSaid[1,string]=="fat")
+        {Ball:setMass(50000)}
+
+        
+if(Target){
+#if(!Target){T=entity()}
+
+        
+        }
+        findClearWhiteList()
+        findClearBlackList()
+        findIncludePlayerProps(owner())
+        #findAllowModel(Prop)
+        findByClass("prop_combine_ball")
+        #findByClass("crossbow_bolt")
+        #findByClass("npc_grenade_frag")
+        #findByClass("grenade*")
+        #findByClass("npc*")
+        #findByClass("sent*")
+        #findByClass("prop_ragdoll")
+        #findByModel("models/props_c17/oildrum001_explosive.mdl")
+        Ball=find()
+        Pos=Ball:pos()
+        TPos=Target:pos()
+        Speed=(round(Ball:vel():length()))
+        Ball:setMass(500)
+        #}
+        
+        #if(Ball&T<1){Ball:setPos(TPos+vec(0,0,45)) T++}
+        #if(Ball&T<1){Ball:setPos(Pos+vec(0,0,-300)) T++}
+        #if(!Ball){T=0}
+        
+        if(Speed < 80000){
+        if(Target&Mode==1){
+        Ball:applyForce(clamp(((-Pos+TPos+vec(0,0,45))*30000),-500000,500000))
+        Ball:applyForce((-Ball:vel())*100)
+        if(Ball){hint("Targeting ",8)}
+        }
+        
+        if(Target&Mode==2){
+        if(Ball&T<1){Ball:setPos(TPos+vec(0,0,80)) T++}
+        #if(Ball&T<1){Ball:setPos(Pos+vec(0,0,-300)) T++}
+        if(!Ball){T=0}
+        Ball:applyForce(clamp(((-Pos+TPos+vec(0,0,45))*30000),-500000,500000))
+        Ball:applyForce((-Ball:vel())*100)
+        if(Ball){hint("Targeting ",8)}
+        }
+        
+        if(Mode==3){
+        Ball:applyForce((Ball:vel()+vec(0,0,1))*1000)
+        Ball:setMass(500)
+        #noCollideAll(Ball,1)
+        #Ball:setAlpha(0)
+        #Ball:setMass(50000)
+        Ball:propFreeze(0)
+        #Ball:propBreak()
+        #print("wat?")
+        }
+        
+        if(Mode==4){
+        #if(Ball&T<1){Ball:setPos(TPos+vec(0,0,45)) T++}
+        if(Ball&T<1){Ball:setPos(Pos+vec(0,0,-300)) T++}
+        if(!Ball){T=0}
+        Ball:applyForce((Ball:vel()+vec(0,1,1))*1000)
+        Ball:setMass(500)
+        #noCollideAll(Ball,1)
+        #Ball:setAlpha(0)
+        #Ball:setMass(50000)
+        Ball:propFreeze(0)
+        #Ball:propBreak()
+        #print("wat?")
+        }
+       }
+
+
+
+
+
