@@ -1,0 +1,85 @@
+@name Dirts No collide magic
+@inputs Button
+@persist I Entity:entity E:entity ParentingGate:entity T Array1:array Array2:array C
+@outputs I T C
+
+
+#To get best no collides its best to rune once to break constraints and no collide to parenting gate commented out.
+#Then Comment out the breakConstraints line and unncomment the no collide to parenting gate.
+
+interval(100)
+if(first()|duped()){
+    E=entity()
+    #Array = E:getConstraints()
+    ParentingGate=entity():isWeldedTo()
+    ParentingGate:propFreeze(1)
+    E:propFreeze(1)
+    I=0
+    T=1
+        findClearWhiteList()
+        findClearBlackList()
+        findIncludePlayerProps(owner())
+        findInSphere(entity():pos(),1000)
+        
+        findByClass("Prop*")
+        Array1=findToArray()
+        findByClass("Gmod_Wire*")
+        Array2=findToArray()
+    }
+
+if(T < 3){
+if(T == 1){ Array=Array1}
+if(T == 2){ Array=Array2}
+
+
+while( I<=Array:count() && perf(10) )
+{
+
+Entity = Array[I,entity]
+
+
+#########################################
+# put stuff in here for prop manipulation.
+# Most things should be here just uncommment and modify as needed.
+
+
+#Entity:propFreeze(1)
+#Entity:propNotSolid(1)
+
+#Entity:propFreeze(1)
+#noCollideAll(Entity,1)
+#Entity:setMass(5.0)
+
+#Entity:constraintBreak()
+#noCollide(Entity,ParentingGate)
+#weld(Entity,ParentingGate)
+#noCollideAll(Entity,1)
+Entity:propPhysicalMaterial("phx_tire_normal")
+Entity:propDrag(0)
+
+#Entity:parentTo(ParentingGate)
+#Entity:deparent()
+
+#Entity:setColor(vec(255,0,0))
+
+##########################################
+
+I++
+}
+if(I>=Array:count()){
+if(T==1){
+printColor(vec(255,0,0),I + " " +"props and vehicals found.")
+}
+if(T==2){
+printColor(vec(255,0,0),I +" "+ "wire components and holoramds found.")
+}
+    T++
+    I=1
+    Array=array()
+}
+}
+else{
+printColor(vec(255,0,0),"Make!" + toChar(10) + "Toast!")
+selfDestruct()
+}
+
