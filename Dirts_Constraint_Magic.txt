@@ -1,4 +1,4 @@
-@name Dirts No collide magic
+@name Dirts_Constraint_Magic
 @inputs Button
 @persist I Entity:entity E:entity ParentingGate:entity T Array1:array Array2:array C
 @outputs I T C
