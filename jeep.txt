@@ -1,0 +1,31 @@
+@name JEEP
+@inputs 
+@outputs 
+@persist  Rand1 Rand2 I
+@trigger 
+#interval(1000)
+if(first()){
+Size=1
+Rand1=0.2
+Rand2=3
+
+#Entity=holoCreate(number index,vector position,vector scale,angle ang,vector color,string model)
+#    holoCreate(I,Target1:toWorld(Target1:toLocal(Target1:pos())+vec(30,0,40)))
+E=entity()#:isWeldedTo()
+E1=entity():isWeldedTo()
+E1:setAlpha(0)
+Holo=holoCreate(1,E1:toWorld(E1:toLocal(E1:pos())+vec(0,0,0)*Size),vec(1,1,1)*Size)
+holoAng(1,E1:toWorld(E1:toLocal(E1:angles())+ang(0,0,0)))
+holoAnim(1,30)
+
+holoModel(1,"models/buggy.mdl")
+holoParent(1,E1)
+Array=Holo:bones()
+}
+if (I < 100)
+{
+#holoBoneScale(number index,number boneindex,vector scale) 
+holoBoneScale(1,0,vec(random(Rand1,Rand2),random(Rand1,Rand2),random(Rand1,Rand2)))
+Array:removeBone(1)
+I++
+}
