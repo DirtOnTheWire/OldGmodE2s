@@ -60,7 +60,7 @@ COMP=clamp(VELVEC/75,-50,50)-clamp(abs(ANGVEL)*ANGVEL/400,-25,25)
         TURN += clamp(((A-D)*TURN_ANGLE - TURN)/2, -TURN_RATE, TURN_RATE)
          }
         else{TURN += clamp(((A-D)*TURN_ANGLE - TURN)/2, -90, 90)}
-        SLAVE:setAng( CHASSIS:toWorld(ang(-0, TURN+COMP, 5)) )
+        SLAVE:setAng( CHASSIS:toWorld(ang(-0, TURN+COMP, 0)) )
         if(!entity():isFrozen()){
         SLAVE:propFreeze(1)
         }
