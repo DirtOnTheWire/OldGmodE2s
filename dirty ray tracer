@@ -1,0 +1,79 @@
+@name dirty ray tracer
+@inputs #Scr:wirelink
+@outputs 
+@persist H V I HorSynk VerSynk Screen Prop:string X Y Loop PropArray:array Fov Res Range E2:entity Scr:wirelink ShadowHolo:entity ASC
+@trigger 
+
+#interval(1)
+runOnTick(1)
+if (first()){
+    #findByClass("env_sun")
+    #sunDirection()
+    H=0
+    V=0
+    I=0
+    X=0
+    Y=0
+    Range=24000
+    Fov=2  #this need to double for every doubling of resolution. 
+    Res=128
+    Loop=0
+    Screen=1
+    E2=entity()
+    Scr=entity():isWeldedTo():wirelink()
+    ShadowHolo=holoCreate(10000000000000)
+    holoAng(10000000000000,ang(0,0,-30))
+    holoAlpha(10000000000000,0)
+    #Res=256 #desired resouloution, higher is slower, maps only goes to 512
+    Scr[1048569]=0 #sets screen color mode
+    Scr[1048572]=Res #sets screen res
+    Scr[1048573]=Res #sets screen res
+    rangerHitWater(1) 
+    rangerHitEntities(1) 
+    rangerIgnoreWorld(0) 
+    rangerDefaultZero(0) 
+    rangerFlags("WEZ")
+    #Sets the ranger flags. S can be any combination of I=ignore world, W=hit water, E=hit entities and Z=default to zero
+Res=Res-1
+
+
+}
+
+#ASC=0
+
+while(perf(100)){
+HorSynk=(H-(Res/2))/Fov
+VerSynk=(V-(Res/2))/Fov
+
+
+Ranger=rangerAngle(Range,-HorSynk,-VerSynk)
+
+RangerPos=Ranger:position()
+holoPos(10000000000000,RangerPos)
+RangerShadow=ranger(ShadowHolo,10000000):hitSky()
+
+
+#Zdepth=(abs(((entity():pos():distance(RangerPos))/(Range/256))-255))
+
+RangArr=Ranger:hitNormal()
+#ShadowOverdraw=abs((inrange(RangArr,vec(-ASC,-ASC,-ASC),vec(1,1,1)))-1)
+#ShadowOverdraw=(inrange(RangArr,vec(-ASC,-ASC,-ASC),vec(1,1,1)))
+#Zdepth=(abs(((RangArr:x()+1)+(RangArr:y()+1)+(RangArr:z())+1)*42.66))*Ranger:hit()
+Zdepth=(abs(((sin(RangArr:x())+1)+(RangArr:y()+1)+(RangArr:z())+1)*42.66)*abs(((E2:pos():distance(RangerPos))/(Range))-1))*((RangerShadow)+3)/4
+
+I++
+
+
+Scr[I]=Zdepth
+
+
+
+
+
+H++
+
+
+if(H>Res){H=0 V++}
+if(V>Res){V=0 I=0}
+
+}
